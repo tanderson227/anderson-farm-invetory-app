@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Anderson Farm">
   <meta name="theme-color" content="#802F23">
-  <meta name="description" content="Anderson Family Farms Inventory Management System - Ohio, Illinois">
+  <meta name="description" content="Anderson Family Farms Real-Time Cloud Inventory Management System - Ohio, Illinois">
 
   <!-- Dynamic Touch App Icon (SVG Seal Badge for Mobile Home Screens) -->
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23802F23'/><circle cx='50' cy='50' r='42' fill='none' stroke='%23D4AF37' stroke-width='3'/><circle cx='50' cy='50' r='38' fill='%231E4827'/><text x='50' y='42' font-family='serif' font-size='11' font-weight='bold' fill='%23FCFAF7' text-anchor='middle'>ANDERSON</text><text x='50' y='55' font-family='sans-serif' font-size='7' font-weight='bold' fill='%23D4AF37' text-anchor='middle'>FAMILY FARMS</text><text x='50' y='67' font-family='sans-serif' font-size='5' fill='%23FCFAF7' text-anchor='middle'>OHIO, ILLINOIS</text></svg>">
@@ -20,16 +20,20 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts: Inter (UI) & Playfair Display (Rustic Serif Headers) -->
+  <!-- Google Fonts: Inter & Playfair Display -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Firebase Web SDK (Compat Mode for single-file HTML apps) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <script>
-    // Custom Tailwind color palette matching Anderson Family Farms Seal Logo
+    // Tailwind Custom Palette matching Anderson Family Farms Logo Seal
     tailwind.config = {
       theme: {
         extend: {
@@ -39,18 +43,18 @@
               100: '#f9eee9',
               600: '#b84a39',
               700: '#9b392b',
-              800: '#802f23', // Main Terracotta Red from logo
+              800: '#802f23', // Terracotta Red
               900: '#64251c',
             },
             farmgreen: {
               50: '#f2f8f3',
               600: '#2e6f3b',
-              700: '#1e4827', // Main Farm Green from logo
+              700: '#1e4827', // Farm Green
               800: '#16361d',
               900: '#0d2212',
             },
             harvestgold: {
-              500: '#d4af37', // Gold trim from logo
+              500: '#d4af37', // Gold Accent
               600: '#b89428',
               700: '#94741c',
             },
@@ -101,108 +105,93 @@
   <header class="bg-clay-800 text-white shadow-lg border-b-4 border-harvestgold-500 sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
       
-      <!-- Logo & Farm Title Block -->
-      <div class="flex items-center space-x-3.5">
+      <!-- Logo, Title & Real-Time Sync Status Badge -->
+      <div class="flex items-center space-x-3.5 w-full sm:w-auto justify-between sm:justify-start">
         
-        <!-- Vector SVG Seal Badge Logo -->
-        <div class="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-cream-100 rounded-full p-1 shadow-inner border-2 border-harvestgold-500 flex items-center justify-center">
-          <svg viewBox="0 0 200 200" class="w-full h-full">
-            <!-- Scalloped Outer Red Ring -->
-            <circle cx="100" cy="100" r="96" fill="#802f23" stroke="#d4af37" stroke-width="3.5"/>
-            <circle cx="100" cy="100" r="88" fill="none" stroke="#f4efe6" stroke-width="1.5" stroke-dasharray="3,2"/>
-            <circle cx="100" cy="100" r="82" fill="#1e4827"/>
-            
-            <!-- Sunburst Rays -->
-            <path d="M100 75 L82 35 L100 95 L118 35 Z" fill="#d4af37" opacity="0.35"/>
-            <path d="M100 75 L62 45 L100 95 L138 45 Z" fill="#d4af37" opacity="0.25"/>
-            <path d="M100 75 L42 62 L100 95 L158 62 Z" fill="#d4af37" opacity="0.25"/>
-            
-            <!-- Sun & Red Barn Silhouette -->
-            <circle cx="100" cy="68" r="13" fill="#d4af37"/>
-            <path d="M86 82 L100 68 L114 82 L114 96 L86 96 Z" fill="#802f23"/>
-            <path d="M94 96 L94 87 L106 87 L106 96 Z" fill="#f4efe6"/>
-            
-            <!-- Rolling Green Fields -->
-            <path d="M18 110 Q 60 90, 100 105 T 182 110 L182 182 A 82 82 0 0 1 18 182 Z" fill="#2e6f3b"/>
-            <path d="M18 125 Q 70 110, 110 125 T 182 130 L182 182 A 82 82 0 0 1 18 182 Z" fill="#1e4827"/>
-            
-            <!-- Green Tractor (Left) -->
-            <rect x="58" y="108" width="26" height="16" rx="2" fill="#2e6f3b"/>
-            <rect x="72" y="100" width="14" height="14" rx="2" fill="#2e6f3b"/>
-            <circle cx="65" cy="126" r="8" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
-            <circle cx="84" cy="124" r="11" fill="#222" stroke="#d4af37" stroke-width="2"/>
-            <circle cx="84" cy="124" r="4" fill="#d4af37"/>
-            <circle cx="65" cy="126" r="3" fill="#d4af37"/>
+        <div class="flex items-center space-x-3">
+          <!-- Vector SVG Seal Badge Logo -->
+          <div class="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-cream-100 rounded-full p-1 shadow-inner border-2 border-harvestgold-500 flex items-center justify-center">
+            <svg viewBox="0 0 200 200" class="w-full h-full">
+              <circle cx="100" cy="100" r="96" fill="#802f23" stroke="#d4af37" stroke-width="3.5"/>
+              <circle cx="100" cy="100" r="88" fill="none" stroke="#f4efe6" stroke-width="1.5" stroke-dasharray="3,2"/>
+              <circle cx="100" cy="100" r="82" fill="#1e4827"/>
+              <path d="M100 75 L82 35 L100 95 L118 35 Z" fill="#d4af37" opacity="0.35"/>
+              <path d="M100 75 L62 45 L100 95 L138 45 Z" fill="#d4af37" opacity="0.25"/>
+              <path d="M100 75 L42 62 L100 95 L158 62 Z" fill="#d4af37" opacity="0.25"/>
+              <circle cx="100" cy="68" r="13" fill="#d4af37"/>
+              <path d="M86 82 L100 68 L114 82 L114 96 L86 96 Z" fill="#802f23"/>
+              <path d="M94 96 L94 87 L106 87 L106 96 Z" fill="#f4efe6"/>
+              <path d="M18 110 Q 60 90, 100 105 T 182 110 L182 182 A 82 82 0 0 1 18 182 Z" fill="#2e6f3b"/>
+              <path d="M18 125 Q 70 110, 110 125 T 182 130 L182 182 A 82 82 0 0 1 18 182 Z" fill="#1e4827"/>
+              <rect x="58" y="108" width="26" height="16" rx="2" fill="#2e6f3b"/>
+              <rect x="72" y="100" width="14" height="14" rx="2" fill="#2e6f3b"/>
+              <circle cx="65" cy="126" r="8" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
+              <circle cx="84" cy="124" r="11" fill="#222" stroke="#d4af37" stroke-width="2"/>
+              <circle cx="84" cy="124" r="4" fill="#d4af37"/>
+              <circle cx="65" cy="126" r="3" fill="#d4af37"/>
+              <rect x="115" y="106" width="28" height="18" rx="2" fill="#9b392b"/>
+              <rect x="110" y="112" width="12" height="12" rx="1" fill="#802f23"/>
+              <circle cx="122" cy="125" r="11" fill="#222" stroke="#d4af37" stroke-width="2"/>
+              <circle cx="138" cy="127" r="7" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
+              <circle cx="122" cy="125" r="4" fill="#d4af37"/>
+              <path d="M 48 147 Q 100 156 152 147 L 148 160 Q 100 169 52 160 Z" fill="#f4efe6" stroke="#802f23" stroke-width="1"/>
+              <path id="ribbonArch" d="M 50,153 Q 100,163 150,153" fill="none"/>
+              <text font-family="sans-serif" font-weight="bold" font-size="8.5" fill="#802f23" text-anchor="middle" letter-spacing="0.5">
+                <textPath href="#ribbonArch" startOffset="50%">OHIO, ILLINOIS</textPath>
+              </text>
+              <path id="subBannerArch" d="M 45,170 Q 100,182 155,170" fill="none"/>
+              <text font-family="sans-serif" font-weight="bold" font-size="7" fill="#d4af37" text-anchor="middle" letter-spacing="1">
+                <textPath href="#subBannerArch" startOffset="50%">• FOUR GENERATIONS •</textPath>
+              </text>
+              <path id="textArchTop" d="M 30,100 A 70,70 0 0,1 170,100" fill="none"/>
+              <text font-family="'Playfair Display', serif" font-weight="bold" font-size="16" fill="#f4efe6" text-anchor="middle">
+                <textPath href="#textArchTop" startOffset="50%">ANDERSON</textPath>
+              </text>
+              <path id="textArchBottom" d="M 25,110 A 72,72 0 0,0 175,110" fill="none"/>
+              <text font-family="sans-serif" font-weight="bold" font-size="10" fill="#d4af37" text-anchor="middle" letter-spacing="1">
+                <textPath href="#textArchBottom" startOffset="50%">FAMILY FARMS</textPath>
+              </text>
+            </svg>
+          </div>
 
-            <!-- Red Combine (Right) -->
-            <rect x="115" y="106" width="28" height="18" rx="2" fill="#9b392b"/>
-            <rect x="110" y="112" width="12" height="12" rx="1" fill="#802f23"/>
-            <circle cx="122" cy="125" r="11" fill="#222" stroke="#d4af37" stroke-width="2"/>
-            <circle cx="138" cy="127" r="7" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
-            <circle cx="122" cy="125" r="4" fill="#d4af37"/>
-            
-            <!-- Ribbon Banner: OHIO, ILLINOIS -->
-            <path d="M 48 147 Q 100 156 152 147 L 148 160 Q 100 169 52 160 Z" fill="#f4efe6" stroke="#802f23" stroke-width="1"/>
-            <path id="ribbonArch" d="M 50,153 Q 100,163 150,153" fill="none"/>
-            <text font-family="sans-serif" font-weight="bold" font-size="8.5" fill="#802f23" text-anchor="middle" letter-spacing="0.5">
-              <textPath href="#ribbonArch" startOffset="50%">OHIO, ILLINOIS</textPath>
-            </text>
-            
-            <!-- Four Generations Text Arc -->
-            <path id="subBannerArch" d="M 45,170 Q 100,182 155,170" fill="none"/>
-            <text font-family="sans-serif" font-weight="bold" font-size="7" fill="#d4af37" text-anchor="middle" letter-spacing="1">
-              <textPath href="#subBannerArch" startOffset="50%">• FOUR GENERATIONS •</textPath>
-            </text>
-
-            <!-- Outer Text Arches -->
-            <path id="textArchTop" d="M 30,100 A 70,70 0 0,1 170,100" fill="none"/>
-            <text font-family="'Playfair Display', serif" font-weight="bold" font-size="16" fill="#f4efe6" text-anchor="middle">
-              <textPath href="#textArchTop" startOffset="50%">ANDERSON</textPath>
-            </text>
-
-            <path id="textArchBottom" d="M 25,110 A 72,72 0 0,0 175,110" fill="none"/>
-            <text font-family="sans-serif" font-weight="bold" font-size="10" fill="#d4af37" text-anchor="middle" letter-spacing="1">
-              <textPath href="#textArchBottom" startOffset="50%">FAMILY FARMS</textPath>
-            </text>
-          </svg>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-serif font-bold text-xl sm:text-2xl tracking-wide text-cream-100">Anderson Family Farms</h1>
+            </div>
+            <p class="text-xs text-harvestgold-500 font-medium flex items-center gap-2 tracking-wider uppercase">
+              <span>Est. 1954</span>
+              <span class="text-clay-600">&bull;</span>
+              <span>Ohio, IL</span>
+              <span class="text-clay-600">&bull;</span>
+              <span class="hidden sm:inline">Four Generations</span>
+            </p>
+          </div>
         </div>
 
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="font-serif font-bold text-xl sm:text-2xl tracking-wide text-cream-100">Anderson Family Farms</h1>
-          </div>
-          <p class="text-xs text-harvestgold-500 font-medium flex items-center gap-2 tracking-wider uppercase">
-            <span>Est. 1954</span>
-            <span class="text-clay-600">&bull;</span>
-            <span>Ohio, Illinois</span>
-            <span class="text-clay-600">&bull;</span>
-            <span class="hidden sm:inline">Four Generations</span>
-          </p>
+        <!-- Live Firebase Connection Indicator Badge -->
+        <div id="syncStatusBadge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-900/60 text-amber-300 border border-amber-500/40">
+          <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="syncStatusText">Connecting Cloud...</span>
         </div>
 
       </div>
 
-      <!-- Action Buttons Header -->
+      <!-- Header Action Triggers -->
       <div class="flex items-center space-x-2 sm:space-x-2.5 w-full sm:w-auto justify-end">
-        
-        <!-- Learn & Code Guide Modal Trigger -->
         <button id="learnBtn" class="bg-clay-700 hover:bg-clay-600 text-cream-100 text-xs font-semibold px-3 py-2 rounded-lg transition-colors border border-clay-600 flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-graduation-cap text-harvestgold-500"></i>
-          <span>Guide & Data</span>
+          <span>Guide</span>
         </button>
 
-        <!-- Sync & Export Backup Trigger -->
         <button id="shareBtn" class="bg-clay-700 hover:bg-clay-600 text-cream-100 text-xs font-semibold px-3 py-2 rounded-lg transition-colors border border-clay-600 flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-cloud-arrow-down text-harvestgold-500"></i>
-          <span>Backup / Export</span>
+          <span>Backup</span>
         </button>
 
-        <!-- Primary Add Item Button -->
         <button id="openAddModalBtn" class="bg-farmgreen-700 hover:bg-farmgreen-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2 rounded-lg shadow-md transition-transform active:scale-95 border border-farmgreen-600 flex items-center gap-1.5">
           <i class="fa-solid fa-plus"></i>
           <span>Add Item</span>
         </button>
-
       </div>
 
     </div>
@@ -214,8 +203,6 @@
 
     <!-- ================= METRICS & STATS DASHBOARD ================= -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
-      
-      <!-- Total Items -->
       <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
         <div class="w-11 h-11 rounded-lg bg-farmgreen-50 text-farmgreen-700 flex items-center justify-center text-lg flex-shrink-0">
           <i class="fa-solid fa-boxes-stacked"></i>
@@ -226,7 +213,6 @@
         </div>
       </div>
 
-      <!-- Low Stock Warnings -->
       <div id="statLowStockCard" class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3 transition-colors">
         <div id="statLowStockIcon" class="w-11 h-11 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-lg flex-shrink-0">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -237,7 +223,6 @@
         </div>
       </div>
 
-      <!-- Total Valuation ($) -->
       <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
         <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg flex-shrink-0">
           <i class="fa-solid fa-sack-dollar"></i>
@@ -248,38 +233,34 @@
         </div>
       </div>
 
-      <!-- Active Locations / Machinery -->
       <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
         <div class="w-11 h-11 rounded-lg bg-clay-50 text-clay-700 flex items-center justify-center text-lg flex-shrink-0">
           <i class="fa-solid fa-tractor"></i>
         </div>
         <div>
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Locations / Equipment</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Locations / Machine</p>
           <h3 id="statLocations" class="text-2xl font-bold text-slate-800">0</h3>
         </div>
       </div>
     </section>
 
 
-    <!-- ================= DYNAMIC TABS BAR & CATEGORY MANAGEMENT ================= -->
+    <!-- ================= DYNAMIC TABS BAR ================= -->
     <section class="mb-6 space-y-3">
       <div class="flex items-center justify-between">
         <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
           <i class="fa-solid fa-folder-tree text-clay-700"></i>
           <span>Inventory Categories & Custom Equipment Tabs</span>
         </h2>
-
-        <!-- Custom Tab Manager Trigger -->
         <button id="openAddTabBtn" class="text-xs font-semibold text-clay-700 hover:text-clay-800 hover:underline flex items-center gap-1">
           <i class="fa-solid fa-plus-circle"></i>
           <span>Add Custom Tab</span>
         </button>
       </div>
 
-      <!-- Scrollable Tab Buttons Bar -->
       <div class="bg-white p-2 rounded-xl border border-cream-300 shadow-sm flex items-center justify-between gap-2">
         <div id="dynamicTabList" class="flex gap-2 overflow-x-auto no-scrollbar py-1 px-1 flex-grow">
-          <!-- Dynamic Tabs Injected Here via JavaScript -->
+          <!-- Dynamic Tabs Injected Here -->
         </div>
       </div>
     </section>
@@ -288,17 +269,13 @@
     <!-- ================= SEARCH & CONTROLS TOOLBAR ================= -->
     <section class="bg-white rounded-xl shadow-sm border border-cream-300 p-4 mb-6 space-y-3">
       <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
-        
-        <!-- Search Field -->
         <div class="relative w-full md:w-96">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
           <input type="text" id="searchInput" placeholder="Search seed variety, part #, client, tractor..." 
             class="w-full pl-10 pr-4 py-2.5 bg-cream-100/60 border border-cream-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-clay-700 focus:bg-white transition-all">
         </div>
 
-        <!-- Low Stock Filter & Sorting Select -->
         <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
-          
           <button id="lowStockToggle" class="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-cream-300 text-xs sm:text-sm font-medium text-slate-700 hover:bg-cream-100 transition-all select-none">
             <span class="w-2.5 h-2.5 rounded-full bg-slate-300 transition-colors" id="lowStockIndicator"></span>
             <span>Low Stock Only</span>
@@ -315,9 +292,7 @@
               <option value="location">Location / Machine</option>
             </select>
           </div>
-
         </div>
-
       </div>
     </section>
 
@@ -327,7 +302,6 @@
       <!-- Cards dynamically generated here -->
     </section>
 
-    <!-- Empty State Message -->
     <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-cream-300 shadow-sm">
       <div class="w-16 h-16 bg-cream-100 text-clay-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
         <i class="fa-solid fa-wheat-awn-circle-exclamation"></i>
@@ -345,8 +319,6 @@
   <!-- ================= MODAL 1: ADD / EDIT ITEM ================= -->
   <div id="itemModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in max-h-[92vh] flex flex-col">
-      
-      <!-- Modal Header -->
       <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-boxes-packing text-harvestgold-500 text-lg"></i>
@@ -357,24 +329,19 @@
         </button>
       </div>
 
-      <!-- Modal Body Form -->
       <form id="itemForm" class="p-6 overflow-y-auto space-y-4 flex-grow text-xs sm:text-sm">
         <input type="hidden" id="itemId">
 
-        <!-- Item Name -->
         <div>
           <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Item Name *</label>
           <input type="text" id="itemName" required placeholder="e.g. Pioneer P1197AM Corn, Oil Filter, Round Bales"
             class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
         </div>
 
-        <!-- Category Tab & Hybrid/Part Number -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Category / Tab *</label>
-            <select id="itemCategory" required class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
-              <!-- Dynamically populated categories -->
-            </select>
+            <select id="itemCategory" required class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none"></select>
           </div>
 
           <div>
@@ -384,7 +351,6 @@
           </div>
         </div>
 
-        <!-- Supplier/Client & Storage/Machinery Location -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Supplier / Client Name</label>
@@ -407,7 +373,6 @@
           </div>
         </div>
 
-        <!-- Quantity, Unit, & Min Alert -->
         <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Quantity *</label>
@@ -438,7 +403,6 @@
           </div>
         </div>
 
-        <!-- Cost Per Unit & Expiration/Planting Window -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Cost Per Unit ($)</label>
@@ -453,24 +417,19 @@
           </div>
         </div>
 
-        <!-- Notes -->
         <div>
           <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Notes / Field Specs</label>
           <textarea id="itemNotes" rows="2" placeholder="e.g. Chemical application rate, lot number, maintenance interval..."
             class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none"></textarea>
         </div>
 
-        <!-- Footer Buttons -->
         <div class="pt-3 flex items-center justify-end space-x-3 border-t border-cream-300">
-          <button type="button" id="cancelFormBtn" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-semibold">
-            Cancel
-          </button>
+          <button type="button" id="cancelFormBtn" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-semibold">Cancel</button>
           <button type="submit" class="px-5 py-2 bg-farmgreen-700 hover:bg-farmgreen-600 text-white font-bold rounded-lg shadow flex items-center gap-1.5">
             <i class="fa-solid fa-floppy-disk"></i>
             <span>Save Record</span>
           </button>
         </div>
-
       </form>
     </div>
   </div>
@@ -479,7 +438,6 @@
   <!-- ================= MODAL 2: ADD / MANAGE CUSTOM TABS ================= -->
   <div id="customTabModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in">
-      
       <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-folder-plus text-harvestgold-500 text-lg"></i>
@@ -491,39 +449,30 @@
       </div>
 
       <div class="p-6 space-y-5 text-xs sm:text-sm">
-        
-        <!-- Add New Tab Form -->
         <form id="newTabForm" class="space-y-2">
           <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px]">Create New Category / Machine Tab</label>
           <div class="flex gap-2">
             <input type="text" id="newTabNameInput" required placeholder="e.g. John Deere 8320, Field 14..."
               class="flex-grow px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
-            <button type="submit" class="bg-clay-700 hover:bg-clay-800 text-white font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
-              + Add Tab
-            </button>
+            <button type="submit" class="bg-clay-700 hover:bg-clay-800 text-white font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap">+ Add Tab</button>
           </div>
         </form>
 
-        <!-- Current Custom Tabs List -->
         <div class="border-t border-cream-300 pt-3 space-y-2">
           <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px]">Existing Tabs</label>
-          <div id="tabManagementList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-            <!-- Dynamic tab list with delete buttons generated via JS -->
-          </div>
+          <div id="tabManagementList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
         </div>
-
       </div>
     </div>
   </div>
 
 
-  <!-- ================= MODAL 3: EXPORT / IMPORT / SYNC BACKUP ================= -->
+  <!-- ================= MODAL 3: EXPORT / IMPORT BACKUP ================= -->
   <div id="shareModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in">
-      
       <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
         <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-arrows-rotate text-harvestgold-500 text-lg"></i>
+          <i class="fa-solid fa-cloud-arrow-down text-harvestgold-500 text-lg"></i>
           <h2 class="font-serif font-bold text-lg">Family Data Backup & Sync</h2>
         </div>
         <button id="closeShareModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
@@ -533,7 +482,7 @@
 
       <div class="p-6 space-y-4 text-xs sm:text-sm">
         <p class="text-slate-600 leading-relaxed">
-          Export your inventory to share files with family members or keep an offline backup copy on your desktop.
+          Your inventory auto-syncs live via Firebase Cloud. You can also export offline backups or share Excel/CSV files.
         </p>
 
         <div class="grid grid-cols-2 gap-2.5 pt-1">
@@ -569,82 +518,62 @@
   <!-- ================= MODAL 4: LEARNING & DATA PRESERVATION GUIDE ================= -->
   <div id="learnModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-3xl w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in max-h-[90vh] flex flex-col">
-      
       <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-graduation-cap text-harvestgold-500 text-xl"></i>
-          <h2 class="font-serif font-bold text-lg">Data Safety & Web Dev Guide</h2>
+          <h2 class="font-serif font-bold text-lg">Cloud Sync & App Installation Guide</h2>
         </div>
         <button id="closeLearnModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
       </div>
 
-      <!-- Tabs Header -->
       <div class="flex border-b border-cream-300 bg-cream-100 overflow-x-auto no-scrollbar px-6 pt-2">
-        <button class="learn-tab active-tab text-xs sm:text-sm font-bold px-4 py-2.5 border-b-2 border-clay-700 text-clay-800" data-tab="tab-persistence">1. Safe Code Updates</button>
-        <button class="learn-tab text-xs sm:text-sm font-medium px-4 py-2.5 text-slate-500 border-b-2 border-transparent hover:text-slate-800" data-tab="tab-code">2. How Code Works</button>
-        <button class="learn-tab text-xs sm:text-sm font-medium px-4 py-2.5 text-slate-500 border-b-2 border-transparent hover:text-slate-800" data-tab="tab-pwa">3. Install on Phone</button>
+        <button class="learn-tab active-tab text-xs sm:text-sm font-bold px-4 py-2.5 border-b-2 border-clay-700 text-clay-800" data-tab="tab-sync">1. Firebase Auto-Sync</button>
+        <button class="learn-tab text-xs sm:text-sm font-medium px-4 py-2.5 text-slate-500 border-b-2 border-transparent hover:text-slate-800" data-tab="tab-persistence">2. Safe Code Updates</button>
+        <button class="learn-tab text-xs sm:text-sm font-medium px-4 py-2.5 text-slate-500 border-b-2 border-transparent hover:text-slate-800" data-tab="tab-pwa">3. Install on Mobile</button>
       </div>
 
       <div class="p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed flex-grow">
         
-        <!-- Tab 1: Will updates delete data? -->
-        <div id="tab-persistence" class="tab-content space-y-3">
+        <div id="tab-sync" class="tab-content space-y-3">
           <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
             <h3 class="font-bold text-emerald-900 text-base flex items-center gap-2">
-              <i class="fa-solid fa-shield-halved text-emerald-600"></i>
-              Will I lose my data when I update the code on GitHub?
+              <i class="fa-solid fa-tower-cell text-emerald-600"></i>
+              How Real-Time Cloud Syncing Works
             </h3>
             <p class="mt-1 text-emerald-800 font-medium">
-              <b>No! You will NOT lose your data.</b> Here is why:
+              Your app is connected to <b>Google Firebase Realtime Database</b>.
             </p>
           </div>
+          <ul class="list-disc pl-5 space-y-1.5 text-slate-600">
+            <li><b>Zero Latency:</b> When anyone updates a quantity or adds a new hybrid in the field, all family phones update instantly without needing to refresh.</li>
+            <li><b>Offline Fallback:</b> If you enter a barn with no cellular service, changes are cached locally in your browser and pushed to the cloud automatically once you reconnect.</li>
+          </ul>
+        </div>
 
-          <div class="space-y-2 text-slate-600">
-            <p>
-              This app stores your inventory items directly inside your web browser's <b><code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-clay-700">localStorage</code></b>.
+        <div id="tab-persistence" class="tab-content hidden space-y-3">
+          <div class="p-4 bg-clay-50 border border-clay-200 rounded-xl">
+            <h3 class="font-bold text-clay-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-clay-600"></i>
+              Will GitHub updates erase inventory?
+            </h3>
+            <p class="mt-1 text-clay-800 font-medium">
+              <b>No!</b> GitHub Pages only holds the visual code. Your inventory items live securely inside your Firebase cloud database.
             </p>
-            <ul class="list-disc pl-5 space-y-1.5">
-              <li><b>Code vs. Storage:</b> GitHub Pages hosts the application code file (<code class="font-mono">index.html</code>). Your inventory data lives safely inside your family phone or laptop browsers under your site's domain.</li>
-              <li><b>When you edit & re-upload:</b> When you add new features or modify colors in <code class="font-mono">index.html</code> and push it to GitHub, the browser downloads the new visual app layout, but <b>reads the existing saved inventory items from `localStorage` unharmed!</b></li>
-              <li><b>Best Practice Safety Net:</b> Before pushing major new updates, click <b>"Backup / Export"</b> to download a <code class="font-mono">.json</code> backup file as an extra precaution.</li>
-            </ul>
           </div>
         </div>
 
-        <!-- Tab 2: Web Dev Basics -->
-        <div id="tab-code" class="tab-content hidden space-y-3">
-          <h3 class="font-bold text-slate-900 text-base">How This Single-File App Operates</h3>
-          <p>This entire app combines three core web technologies inside one file:</p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="p-3 bg-cream-100 rounded-xl border border-cream-300">
-              <h4 class="font-bold text-clay-800 flex items-center gap-1 mb-1"><i class="fa-brands fa-html5"></i> HTML</h4>
-              <p class="text-xs text-slate-600">Structure & elements: Headers, modals, dynamic tab buttons, and inventory card templates.</p>
-            </div>
-            <div class="p-3 bg-cream-100 rounded-xl border border-cream-300">
-              <h4 class="font-bold text-farmgreen-700 flex items-center gap-1 mb-1"><i class="fa-brands fa-css3-alt"></i> Tailwind CSS</h4>
-              <p class="text-xs text-slate-600">Styles & colors: Custom terracotta red, farm green, responsive grid layouts, and font styling.</p>
-            </div>
-            <div class="p-3 bg-cream-100 rounded-xl border border-cream-300">
-              <h4 class="font-bold text-amber-700 flex items-center gap-1 mb-1"><i class="fa-brands fa-js"></i> JavaScript</h4>
-              <p class="text-xs text-slate-600">Brain & logic: Calculates total valuation $, filters low stock, adds custom tabs, & saves to `localStorage`.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 3: Mobile PWA -->
         <div id="tab-pwa" class="tab-content hidden space-y-3">
-          <h3 class="font-bold text-slate-900 text-base">Adding to Family Phones as a Full-Screen App</h3>
+          <h3 class="font-bold text-slate-900 text-base">Adding to Mobile Home Screens</h3>
           <div class="space-y-2">
             <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
               <h4 class="font-bold text-slate-900"><i class="fa-brands fa-apple mr-1"></i> iPhone / iPad (Safari)</h4>
-              <p class="text-xs text-slate-600 mt-0.5">Open your GitHub Pages URL in Safari &rarr; Tap <b>Share Icon</b> (box with arrow) &rarr; Tap <b>"Add to Home Screen"</b>.</p>
+              <p class="text-xs text-slate-600 mt-0.5">Safari &rarr; Tap <b>Share Icon</b> &rarr; Tap <b>"Add to Home Screen"</b>.</p>
             </div>
             <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
               <h4 class="font-bold text-slate-900"><i class="fa-brands fa-android text-farmgreen-700 mr-1"></i> Android (Chrome)</h4>
-              <p class="text-xs text-slate-600 mt-0.5">Open your URL in Chrome &rarr; Tap the <b>3 dots menu</b> in top right &rarr; Tap <b>"Install App"</b> or <b>"Add to Home screen"</b>.</p>
+              <p class="text-xs text-slate-600 mt-0.5">Chrome &rarr; Tap <b>3 dots menu</b> &rarr; Tap <b>"Add to Home screen"</b>.</p>
             </div>
           </div>
         </div>
@@ -654,37 +583,52 @@
   </div>
 
 
-  <!-- ================= MODAL 5: DELETE CONFIRMATION ================= -->
-  <div id="deleteModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <!-- ================= MODAL 5: CUSTOM CONFIRMATION ================= -->
+  <div id="confirmModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-6 text-center animate-fade-in space-y-4">
-      <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl">
+      <div id="confirmIconContainer" class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl">
         <i class="fa-solid fa-trash-can"></i>
       </div>
       <div>
-        <h3 class="font-bold text-slate-900 text-lg font-serif">Remove Item?</h3>
-        <p id="deleteItemName" class="text-xs text-slate-500 mt-1"></p>
+        <h3 id="confirmTitle" class="font-bold text-slate-900 text-lg font-serif">Confirm Action</h3>
+        <p id="confirmMessage" class="text-xs text-slate-500 mt-1"></p>
       </div>
       <div class="flex gap-2 pt-2">
-        <button id="cancelDeleteBtn" class="w-1/2 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50">Cancel</button>
-        <button id="confirmDeleteBtn" class="w-1/2 py-2 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-sm">Delete</button>
+        <button id="cancelConfirmBtn" class="w-1/2 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50">Cancel</button>
+        <button id="acceptConfirmBtn" class="w-1/2 py-2 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-sm">Confirm</button>
       </div>
     </div>
   </div>
 
 
-  <!-- ================= TOAST NOTIFICATION CONTAINER ================= -->
+  <!-- ================= TOAST CONTAINER ================= -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none"></div>
 
 
-  <!-- ================= APPLICATION JAVASCRIPT CODE ================= -->
+  <!-- ================= APPLICATION JAVASCRIPT & FIREBASE LOGIC ================= -->
   <script>
     /**
      * ANDERSON FAMILY FARMS INVENTORY MANAGER
-     * Single-file Progressive Web Application with dynamic category tabs, farm-specific tracking,
-     * total inventory valuation ($), local storage persistence, and JSON/CSV backup tools.
+     * Firebase Realtime Cloud Synchronization Engine
      */
 
-    // Initial Default Sample Data for Anderson Family Farms (Ohio, IL)
+    // Exact User-provided Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuizyPErvi-Sc9biKmu7np7QTYUTtKZE4",
+      authDomain: "anderson-family-farm-inventory.firebaseapp.com",
+      databaseURL: "https://anderson-family-farm-inventory-default-rtdb.firebaseio.com",
+      projectId: "anderson-family-farm-inventory",
+      storageBucket: "anderson-family-farm-inventory.firebasestorage.app",
+      messagingSenderId: "679442346997",
+      appId: "1:679442346997:web:c1b12854264e8e32a966bc"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const cloudRef = db.ref('farm_inventory');
+
+    // Default Seed Data for Anderson Family Farms (Ohio, IL)
     const DEFAULT_FARM_DATA = [
       {
         id: '1',
@@ -741,24 +685,9 @@
         cost: 62.00,
         expiry: 'Spring 2027',
         notes: 'Treated with Acceleron.'
-      },
-      {
-        id: '5',
-        name: 'Hydraulic Hose Assembly 3/4"',
-        category: 'Tractor & Machinery Parts',
-        variety: '2-Wire 4000 PSI',
-        supplier: 'NAPA Auto Parts',
-        location: 'Case IH Combine',
-        quantity: 2,
-        unit: 'parts',
-        minStock: 1,
-        cost: 45.00,
-        expiry: 'N/A',
-        notes: 'Spare header hydraulic line.'
       }
     ];
 
-    // Default Starting Category Tabs
     const DEFAULT_CATEGORIES = [
       'All Items',
       'Seeds & Crops',
@@ -768,7 +697,7 @@
       'Hardware & Tools'
     ];
 
-    // Global App State
+    // Application State
     let state = {
       items: [],
       categories: [],
@@ -776,10 +705,11 @@
       searchQuery: '',
       lowStockOnly: false,
       sortBy: 'name-asc',
-      deleteTargetId: null
+      isCloudConnected: false,
+      confirmCallback: null
     };
 
-    // DOM Elements
+    // DOM References
     const inventoryGrid = document.getElementById('inventoryGrid');
     const emptyState = document.getElementById('emptyState');
     const searchInput = document.getElementById('searchInput');
@@ -787,65 +717,110 @@
     const lowStockToggle = document.getElementById('lowStockToggle');
     const lowStockIndicator = document.getElementById('lowStockIndicator');
     const dynamicTabList = document.getElementById('dynamicTabList');
-    
-    // Summary Stat Elements
+
     const statTotalItems = document.getElementById('statTotalItems');
     const statLowStock = document.getElementById('statLowStock');
     const statTotalValue = document.getElementById('statTotalValue');
     const statLocations = document.getElementById('statLocations');
     const statLowStockCard = document.getElementById('statLowStockCard');
 
-    // Modals & Forms
     const itemModal = document.getElementById('itemModal');
     const customTabModal = document.getElementById('customTabModal');
     const shareModal = document.getElementById('shareModal');
     const learnModal = document.getElementById('learnModal');
-    const deleteModal = document.getElementById('deleteModal');
+    const confirmModal = document.getElementById('confirmModal');
     const itemForm = document.getElementById('itemForm');
     const newTabForm = document.getElementById('newTabForm');
 
-    // INITIALIZATION
+    const syncStatusBadge = document.getElementById('syncStatusBadge');
+    const syncDot = document.getElementById('syncDot');
+    const syncStatusText = document.getElementById('syncStatusText');
+
+    // INITIALIZATION & REAL-TIME LISTENERS
     function init() {
-      loadData();
-      renderTabs();
+      setupConnectionListener();
+      setupCloudRealtimeListener();
       setupEventListeners();
+      loadLocalFallback();
       render();
     }
 
-    // Load from localStorage
-    function loadData() {
-      const storedItems = localStorage.getItem('aff_inventory_items');
-      const storedCategories = localStorage.getItem('aff_inventory_categories');
-
-      if (storedItems) {
-        try { state.items = JSON.parse(storedItems); } catch(e) { state.items = [...DEFAULT_FARM_DATA]; }
-      } else {
-        state.items = [...DEFAULT_FARM_DATA];
-        saveData();
-      }
-
-      if (storedCategories) {
-        try { state.categories = JSON.parse(storedCategories); } catch(e) { state.categories = [...DEFAULT_CATEGORIES]; }
-      } else {
-        state.categories = [...DEFAULT_CATEGORIES];
-        saveCategories();
-      }
+    // Monitor Firebase Connection Status
+    function setupConnectionListener() {
+      db.ref('.info/connected').on('value', (snap) => {
+        if (snap.val() === true) {
+          state.isCloudConnected = true;
+          syncStatusBadge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-900/60 text-emerald-300 border border-emerald-500/40';
+          syncDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          syncStatusText.textContent = 'Cloud Sync Active';
+        } else {
+          state.isCloudConnected = false;
+          syncStatusBadge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-900/60 text-amber-300 border border-amber-500/40';
+          syncDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          syncStatusText.textContent = 'Offline (Cached)';
+        }
+      });
     }
 
-    function saveData() {
+    // Real-Time Database Listener across all devices
+    function setupCloudRealtimeListener() {
+      cloudRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          state.items = data.items || [];
+          state.categories = data.categories || DEFAULT_CATEGORIES;
+          saveLocalFallback();
+          renderTabs();
+          render();
+        } else {
+          // If cloud database is empty, seed with initial Anderson Farm data
+          pushDataToCloud(DEFAULT_FARM_DATA, DEFAULT_CATEGORIES);
+        }
+      }, (error) => {
+        console.error("Firebase sync error:", error);
+        loadLocalFallback();
+      });
+    }
+
+    // Save to Cloud Realtime Database
+    function pushDataToCloud(itemsToSave = state.items, categoriesToSave = state.categories) {
+      cloudRef.set({
+        items: itemsToSave,
+        categories: categoriesToSave,
+        lastUpdated: new Date().toISOString()
+      }).then(() => {
+        saveLocalFallback();
+      }).catch(err => {
+        console.error("Save error:", err);
+        showToast("Error saving to cloud. Saved locally.");
+        saveLocalFallback();
+      });
+    }
+
+    // Local Storage Fallback
+    function saveLocalFallback() {
       localStorage.setItem('aff_inventory_items', JSON.stringify(state.items));
-      render();
+      localStorage.setItem('aff_inventory_categories', JSON.stringify(state.categories));
     }
 
-    function saveCategories() {
-      localStorage.setItem('aff_inventory_categories', JSON.stringify(state.categories));
-      renderTabs();
-      populateCategoryDropdown();
-      renderTabManagementList();
+    function loadLocalFallback() {
+      try {
+        const items = localStorage.getItem('aff_inventory_items');
+        const categories = localStorage.getItem('aff_inventory_categories');
+        if (items) state.items = JSON.parse(items);
+        if (categories) state.categories = JSON.parse(categories);
+      } catch (e) {
+        state.items = [...DEFAULT_FARM_DATA];
+        state.categories = [...DEFAULT_CATEGORIES];
+      }
     }
 
     // RENDER CATEGORY TABS
     function renderTabs() {
+      if (!state.categories || state.categories.length === 0) {
+        state.categories = [...DEFAULT_CATEGORIES];
+      }
+
       dynamicTabList.innerHTML = state.categories.map(cat => {
         const isActive = state.activeCategory === cat;
         const activeStyles = isActive 
@@ -867,14 +842,12 @@
       render();
     };
 
-    // Populate Modal Category Select Box
     function populateCategoryDropdown() {
       const select = document.getElementById('itemCategory');
       const validCategories = state.categories.filter(c => c !== 'All Items');
       select.innerHTML = validCategories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     }
 
-    // Tab Management Modal Content
     function renderTabManagementList() {
       const container = document.getElementById('tabManagementList');
       const customTabs = state.categories.filter(c => c !== 'All Items');
@@ -895,13 +868,21 @@
         showToast("Must keep at least one category tab");
         return;
       }
-      state.categories = state.categories.filter(c => c !== catName);
-      if (state.activeCategory === catName) state.activeCategory = 'All Items';
-      saveCategories();
-      showToast(`Deleted tab "${catName}"`);
+      openConfirmModal(
+        `Remove tab "${catName}"?`,
+        "Items assigned to this tab will remain visible under 'All Items'.",
+        () => {
+          state.categories = state.categories.filter(c => c !== catName);
+          if (state.activeCategory === catName) state.activeCategory = 'All Items';
+          pushDataToCloud();
+          renderTabs();
+          renderTabManagementList();
+          showToast(`Deleted tab "${catName}"`);
+        }
+      );
     };
 
-    // Quick Quantity Adjuster (+ / -)
+    // Quick Quantity Control (+ / -)
     window.adjustQuantity = function(id, delta) {
       const item = state.items.find(i => i.id === id);
       if (!item) return;
@@ -909,12 +890,12 @@
       const newQty = Math.max(0, parseFloat((item.quantity + delta).toFixed(2)));
       if (newQty !== item.quantity) {
         item.quantity = newQty;
-        saveData();
+        pushDataToCloud();
         showToast(`Updated ${item.name}: ${newQty} ${item.unit}`);
       }
     };
 
-    // Calculate Dashboard Stats
+    // Dashboard Statistics Calculation
     function updateMetrics() {
       const totalItems = state.items.length;
       const lowStockItems = state.items.filter(i => Number(i.quantity) <= Number(i.minStock)).length;
@@ -938,7 +919,6 @@
       }
     }
 
-    // Filter & Sort Logic
     function getFilteredItems() {
       return state.items.filter(item => {
         const query = state.searchQuery.toLowerCase();
@@ -964,7 +944,6 @@
       });
     }
 
-    // Render Inventory Cards Grid
     function render() {
       updateMetrics();
       const filtered = getFilteredItems();
@@ -991,9 +970,7 @@
 
         return `
           <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border ${isLowStock ? 'border-amber-300 ring-1 ring-amber-200' : 'border-cream-300'} hover:shadow-md transition-all flex flex-col justify-between">
-            
             <div>
-              <!-- Category Tag & Badge -->
               <div class="flex items-center justify-between gap-2 mb-2">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-clay-700 bg-cream-200 px-2.5 py-0.5 rounded-md border border-cream-300">
                   ${escapeHtml(item.category)}
@@ -1001,19 +978,16 @@
                 ${statusBadge}
               </div>
 
-              <!-- Item Name -->
               <h3 class="font-serif font-bold text-slate-900 text-base sm:text-lg leading-snug mb-1">
                 ${escapeHtml(item.name)}
               </h3>
 
-              <!-- Hybrid / Part # / Spec -->
               ${item.variety ? `
                 <p class="text-xs font-medium text-clay-700 mb-2 flex items-center gap-1">
                   <i class="fa-solid fa-microchip text-slate-400"></i> ${escapeHtml(item.variety)}
                 </p>
               ` : ''}
 
-              <!-- Location & Supplier Badges -->
               <div class="space-y-1 mb-3 text-xs text-slate-500">
                 ${item.location ? `
                   <div class="flex items-center gap-1.5">
@@ -1029,7 +1003,6 @@
                 ` : ''}
               </div>
 
-              <!-- Quantity Block -->
               <div class="bg-cream-100/70 rounded-xl p-3 border border-cream-300 flex items-center justify-between mb-3">
                 <div>
                   <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Stock Level</span>
@@ -1042,7 +1015,6 @@
                   <span class="text-[10px] text-slate-400 block">Alert below: ${item.minStock} ${escapeHtml(item.unit)}</span>
                 </div>
 
-                <!-- Touch Buttons -->
                 <div class="flex items-center gap-1">
                   <button onclick="adjustQuantity('${item.id}', -1)" 
                     class="w-9 h-9 rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 active:scale-95 flex items-center justify-center font-bold text-lg shadow-sm">
@@ -1055,7 +1027,6 @@
                 </div>
               </div>
 
-              <!-- Cost & Total Valuation -->
               ${item.cost ? `
                 <div class="flex items-center justify-between text-xs py-1.5 px-2 bg-slate-50 rounded-lg border border-slate-100 mb-3">
                   <span class="text-slate-500">Unit Cost: <b>$${Number(item.cost).toFixed(2)}</b></span>
@@ -1063,17 +1034,14 @@
                 </div>
               ` : ''}
 
-              <!-- Expiry / Notes -->
               ${item.expiry || item.notes ? `
                 <div class="text-[11px] text-slate-500 bg-white p-2 rounded-lg border border-slate-100 space-y-1">
                   ${item.expiry ? `<div><i class="fa-regular fa-calendar text-clay-600 mr-1"></i><b>Window:</b> ${escapeHtml(item.expiry)}</div>` : ''}
                   ${item.notes ? `<div class="italic text-slate-600">"${escapeHtml(item.notes)}"</div>` : ''}
                 </div>
               ` : ''}
-
             </div>
 
-            <!-- Card Actions -->
             <div class="pt-3 mt-2 border-t border-cream-300 flex items-center justify-end space-x-2">
               <button onclick="openEditModal('${item.id}')" 
                 class="px-2.5 py-1 text-xs font-bold text-slate-600 hover:text-clay-700 hover:bg-clay-50 rounded-lg transition-colors flex items-center gap-1">
@@ -1084,7 +1052,6 @@
                 <i class="fa-solid fa-trash"></i> Delete
               </button>
             </div>
-
           </div>
         `;
       }).join('');
@@ -1125,7 +1092,6 @@
       itemModal.classList.add('hidden');
     }
 
-    // Save Item
     itemForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -1153,11 +1119,10 @@
         showToast(`Added "${name}"`);
       }
 
-      saveData();
+      pushDataToCloud();
       closeModal();
     });
 
-    // Custom Tab Form Submission
     newTabForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const newName = document.getElementById('newTabNameInput').value.trim();
@@ -1169,33 +1134,42 @@
       }
 
       state.categories.push(newName);
-      saveCategories();
+      pushDataToCloud();
       document.getElementById('newTabNameInput').value = '';
-      showToast(`Added dynamic tab "${newName}"`);
+      renderTabs();
+      renderTabManagementList();
+      showToast(`Added tab "${newName}"`);
     });
 
-    // Delete item prompt
     window.promptDelete = function(id, name) {
-      state.deleteTargetId = id;
-      document.getElementById('deleteItemName').textContent = `Are you sure you want to delete "${name}"?`;
-      deleteModal.classList.remove('hidden');
+      openConfirmModal(
+        `Remove Item?`,
+        `Are you sure you want to delete "${name}" from inventory?`,
+        () => {
+          state.items = state.items.filter(i => i.id !== id);
+          pushDataToCloud();
+          showToast('Item deleted');
+        }
+      );
     };
 
-    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-      if (state.deleteTargetId) {
-        state.items = state.items.filter(i => i.id !== state.deleteTargetId);
-        saveData();
-        showToast('Item deleted');
-      }
-      deleteModal.classList.add('hidden');
-      state.deleteTargetId = null;
+    function openConfirmModal(title, message, callback) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      state.confirmCallback = callback;
+      confirmModal.classList.remove('hidden');
+    }
+
+    document.getElementById('acceptConfirmBtn').addEventListener('click', () => {
+      if (state.confirmCallback) state.confirmCallback();
+      confirmModal.classList.add('hidden');
     });
 
-    document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-      deleteModal.classList.add('hidden');
+    document.getElementById('cancelConfirmBtn').addEventListener('click', () => {
+      confirmModal.classList.add('hidden');
     });
 
-    // Export & Import Backup Tools
+    // Backup & Export Functions
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ items: state.items, categories: state.categories }, null, 2));
       const downloadAnchor = document.createElement('a');
@@ -1251,15 +1225,9 @@
           if (imported.items && Array.isArray(imported.items)) {
             state.items = imported.items;
             if (imported.categories) state.categories = imported.categories;
-            saveData();
-            saveCategories();
+            pushDataToCloud();
             shareModal.classList.add('hidden');
-            showToast('Backup file loaded successfully!');
-          } else if (Array.isArray(imported)) {
-            state.items = imported;
-            saveData();
-            shareModal.classList.add('hidden');
-            showToast('Items imported successfully!');
+            showToast('Backup loaded and synced to cloud!');
           }
         } catch (err) {
           showToast('Invalid JSON file format');
@@ -1268,7 +1236,6 @@
       reader.readAsText(file);
     });
 
-    // EVENT LISTENERS
     function setupEventListeners() {
       searchInput.addEventListener('input', (e) => {
         state.searchQuery = e.target.value;
@@ -1303,7 +1270,6 @@
         render();
       });
 
-      // Modals triggers
       document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
       document.getElementById('closeModalBtn').addEventListener('click', closeModal);
       document.getElementById('cancelFormBtn').addEventListener('click', closeModal);
@@ -1320,18 +1286,20 @@
       document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
 
       document.getElementById('resetDemoBtn').addEventListener('click', () => {
-        state.items = [...DEFAULT_FARM_DATA];
-        state.categories = [...DEFAULT_CATEGORIES];
-        saveData();
-        saveCategories();
-        shareModal.classList.add('hidden');
-        showToast('Reset to demo farm data');
+        openConfirmModal(
+          "Reset to Demo Data?",
+          "This will overwrite cloud inventory with default Anderson Farm sample items.",
+          () => {
+            pushDataToCloud([...DEFAULT_FARM_DATA], [...DEFAULT_CATEGORIES]);
+            shareModal.classList.add('hidden');
+            showToast('Reset cloud data to demo records');
+          }
+        );
       });
 
       document.getElementById('learnBtn').addEventListener('click', () => learnModal.classList.remove('hidden'));
       document.getElementById('closeLearnModalBtn').addEventListener('click', () => learnModal.classList.add('hidden'));
 
-      // Tab Swapper in Learn Modal
       document.querySelectorAll('.learn-tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
           document.querySelectorAll('.learn-tab').forEach(t => {
@@ -1348,7 +1316,6 @@
       });
     }
 
-    // TOAST FEEDBACK
     function showToast(message) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
@@ -1363,7 +1330,6 @@
       }, 2500);
     }
 
-    // HTML Sanitization Helper
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)
