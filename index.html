@@ -196,11 +196,49 @@
 
     </div>
   </header>
+<!-- ================= MAIN APP VIEW NAVIGATION ================= -->
+<nav class="bg-white border-b border-cream-300 shadow-sm sticky top-[72px] z-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex space-x-1 sm:space-x-4 overflow-x-auto no-scrollbar py-2">
+      <button onclick="switchView('dashboard')" id="nav-dashboard" 
+        class="nav-view-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all bg-clay-700 text-white shadow-sm">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </button>
 
+      <button onclick="switchView('seeds')" id="nav-seeds" 
+        class="nav-view-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all bg-cream-100 text-slate-700 hover:bg-cream-200">
+        <i class="fa-solid fa-seedling text-farmgreen-700"></i>
+        <span>Seeds & Crops</span>
+      </button>
+
+      <button onclick="switchView('parts')" id="nav-parts" 
+        class="nav-view-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all bg-cream-100 text-slate-700 hover:bg-cream-200">
+        <i class="fa-solid fa-gears text-clay-700"></i>
+        <span>Machinery & Parts</span>
+      </button>
+
+      <button onclick="switchView('chemicals')" id="nav-chemicals" 
+        class="nav-view-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all bg-cream-100 text-slate-700 hover:bg-cream-200">
+        <i class="fa-solid fa-flask text-amber-700"></i>
+        <span>Chemicals & Fertilizer</span>
+      </button>
+    </div>
+  </div>
+</nav>
 
   <!-- ================= MAIN CONTAINER ================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
-
+<!-- DYNAMIC PAGE VIEW TITLE BANNER -->
+<div id="viewBanner" class="hidden mb-6 p-4 rounded-xl bg-gradient-to-r from-clay-800 to-farmgreen-700 text-white shadow-md flex justify-between items-center">
+  <div>
+    <h2 id="viewBannerTitle" class="font-serif font-bold text-xl">Dedicated View</h2>
+    <p id="viewBannerSubtitle" class="text-xs text-harvestgold-500 font-medium mt-0.5">Filtered category view mode</p>
+  </div>
+  <button onclick="switchView('dashboard')" class="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg font-semibold border border-white/30">
+    &larr; Back to Dashboard
+  </button>
+</div>
     <!-- ================= METRICS & STATS DASHBOARD ================= -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
       <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
@@ -704,11 +742,12 @@
       'Hardware & Tools'
     ];
 
-    // Application State
+   // Application State
     let state = {
       items: [],
       categories: [],
       activeCategory: 'All Items',
+      currentView: 'dashboard', // Added for SPA router
       searchQuery: '',
       lowStockOnly: false,
       sortBy: 'name-asc',
@@ -848,7 +887,35 @@
       renderTabs();
       render();
     };
+// SPA View Switching Logic
+window.switchView = function(viewName) {
+  state.currentView = viewName;
 
+  // 1. Update Navigation Button Highlight Styles
+  document.querySelectorAll('.nav-view-btn').forEach(btn => {
+    btn.className = 'nav-view-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all bg-cream-100 text-slate-700 hover:bg-cream-200';
+  });
+
+  const activeNav = document.getElementById(`nav-${viewName}`);
+  if (activeNav) {
+    activeNav.className = 'nav-view-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all bg-clay-700 text-white shadow-sm';
+  }
+
+  // 2. Automatically Link Views to Category Filters
+  if (viewName === 'seeds') {
+    state.activeCategory = 'Seeds & Crops';
+  } else if (viewName === 'parts') {
+    state.activeCategory = 'Tractor & Machinery Parts';
+  } else if (viewName === 'chemicals') {
+    state.activeCategory = 'Chemicals & Fertilizer';
+  } else if (viewName === 'dashboard') {
+    state.activeCategory = 'All Items';
+  }
+
+  // 3. Re-render UI and Category Tabs
+  renderTabs();
+  render();
+};
     function populateCategoryDropdown() {
       const select = document.getElementById('itemCategory');
       const validCategories = state.categories.filter(c => c !== 'All Items');
@@ -953,6 +1020,26 @@
 
     function render() {
       updateMetrics();
+      // Insert this snippet inside the top of your render() function
+const banner = document.getElementById('viewBanner');
+const bannerTitle = document.getElementById('viewBannerTitle');
+const bannerSubtitle = document.getElementById('viewBannerSubtitle');
+
+if (state.currentView !== 'dashboard') {
+  banner.classList.remove('hidden');
+  if (state.currentView === 'seeds') {
+    bannerTitle.textContent = '🌽 Seed & Crop Inventory';
+    bannerSubtitle.textContent = 'Showing hybrid varieties, planting windows, and seed storage records.';
+  } else if (state.currentView === 'parts') {
+    bannerTitle.textContent = '🚜 Machinery & Tractor Parts';
+    bannerSubtitle.textContent = 'Showing maintenance parts, filter numbers, and equipment assignments.';
+  } else if (state.currentView === 'chemicals') {
+    bannerTitle.textContent = '🧪 Chemicals & Fertilizer';
+    bannerSubtitle.textContent = 'Showing liquid/dry application stock, bulk tanks, and application rates.';
+  }
+} else {
+  banner.classList.add('hidden');
+}
       const filtered = getFilteredItems();
 
       if (filtered.length === 0) {
