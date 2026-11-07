@@ -626,7 +626,14 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const cloudRef = db.ref('farm_inventory');
+
+    // ENVIRONMENT AUTO-DETECTION ROUTER
+    const isProduction = window.location.hostname === 'tanderson227.github.io' && 
+                         window.location.pathname.includes('anderson-farm-invetory-app');
+    
+    // Automatically routes live family traffic to 'farm_inventory' and dev/local test traffic to 'test_inventory'
+    const DB_PATH = isProduction ? 'farm_inventory' : 'test_inventory';
+    const cloudRef = db.ref(DB_PATH);
 
     // Default Seed Data for Anderson Family Farms (Ohio, IL)
     const DEFAULT_FARM_DATA = [
@@ -752,7 +759,7 @@
           state.isCloudConnected = true;
           syncStatusBadge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-900/60 text-emerald-300 border border-emerald-500/40';
           syncDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
-          syncStatusText.textContent = 'Cloud Sync Active';
+          syncStatusText.textContent = isProduction ? 'Cloud Sync Active' : 'Test Mode (Isolated)';
         } else {
           state.isCloudConnected = false;
           syncStatusBadge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-900/60 text-amber-300 border border-amber-500/40';
@@ -773,7 +780,7 @@
           renderTabs();
           render();
         } else {
-          // If cloud database is empty, seed with initial Anderson Farm data
+          // If cloud database node is empty, seed with initial Anderson Farm data
           pushDataToCloud(DEFAULT_FARM_DATA, DEFAULT_CATEGORIES);
         }
       }, (error) => {
