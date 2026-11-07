@@ -90,6 +90,25 @@
       scrollbar-width: none;
     }
 
+    .custom-tab-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #dcd0c0 transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    .custom-tab-scrollbar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .custom-tab-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-tab-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #dcd0c0;
+      border-radius: 4px;
+    }
+    .custom-tab-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: #a85834;
+    }
+
     .animate-fade-in {
       animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -196,13 +215,48 @@
 
     </div>
   </header>
+<!-- ================= MAIN APP VIEW NAVIGATION ================= -->
+<nav class="bg-white border-b border-cream-300 shadow-sm sticky top-[72px] z-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-1 sm:gap-2 py-2 min-w-0">
+      <!-- Left scroll arrow button -->
+      <button onclick="scrollNavTabs(-220)" class="flex-shrink-0 w-7 h-8 rounded-lg border border-cream-300 text-slate-500 hover:text-clay-800 hover:bg-cream-100 flex items-center justify-center transition-colors text-xs" title="Scroll tabs left">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
 
+      <!-- Scrollable Tabs Container with min-w-0 flex-1 -->
+      <div id="topNavViewList" class="flex space-x-1 sm:space-x-2.5 overflow-x-auto py-1 px-0.5 flex-1 min-w-0 custom-tab-scrollbar scroll-smooth">
+        <!-- Dynamic Top Nav View Tabs Injected Here -->
+      </div>
+
+      <!-- Right scroll arrow button -->
+      <button onclick="scrollNavTabs(220)" class="flex-shrink-0 w-7 h-8 rounded-lg border border-cream-300 text-slate-500 hover:text-clay-800 hover:bg-cream-100 flex items-center justify-center transition-colors text-xs" title="Scroll tabs right">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+      <!-- Manage Tabs Button -->
+      <button onclick="openTabManagementModal()" class="flex-shrink-0 text-xs font-semibold px-3 py-2 rounded-lg border border-cream-300 text-slate-700 hover:bg-cream-100 hover:text-clay-800 transition-colors flex items-center gap-1.5 shadow-sm" title="Manage View Tabs">
+        <i class="fa-solid fa-sliders text-clay-700"></i>
+        <span class="hidden sm:inline">Manage Tabs</span>
+      </button>
+    </div>
+  </div>
+</nav>
 
   <!-- ================= MAIN CONTAINER ================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
-
+<!-- DYNAMIC PAGE VIEW TITLE BANNER -->
+<div id="viewBanner" class="hidden mb-6 p-4 rounded-xl bg-gradient-to-r from-clay-800 to-farmgreen-700 text-white shadow-md flex justify-between items-center">
+  <div>
+    <h2 id="viewBannerTitle" class="font-serif font-bold text-xl">Dedicated View</h2>
+    <p id="viewBannerSubtitle" class="text-xs text-harvestgold-500 font-medium mt-0.5">Filtered category view mode</p>
+  </div>
+  <button onclick="switchView('dashboard')" class="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg font-semibold border border-white/30">
+    &larr; Back to Dashboard
+  </button>
+</div>
     <!-- ================= METRICS & STATS DASHBOARD ================= -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
+    <section id="inventoryMetricsSection" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
       <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
         <div class="w-11 h-11 rounded-lg bg-farmgreen-50 text-farmgreen-700 flex items-center justify-center text-lg flex-shrink-0">
           <i class="fa-solid fa-boxes-stacked"></i>
@@ -245,29 +299,8 @@
     </section>
 
 
-    <!-- ================= DYNAMIC TABS BAR ================= -->
-    <section class="mb-6 space-y-3">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-          <i class="fa-solid fa-folder-tree text-clay-700"></i>
-          <span>Inventory Categories & Custom Equipment Tabs</span>
-        </h2>
-        <button id="openAddTabBtn" class="text-xs font-semibold text-clay-700 hover:text-clay-800 hover:underline flex items-center gap-1">
-          <i class="fa-solid fa-plus-circle"></i>
-          <span>Add Custom Tab</span>
-        </button>
-      </div>
-
-      <div class="bg-white p-2 rounded-xl border border-cream-300 shadow-sm flex items-center justify-between gap-2">
-        <div id="dynamicTabList" class="flex gap-2 overflow-x-auto no-scrollbar py-1 px-1 flex-grow">
-          <!-- Dynamic Tabs Injected Here -->
-        </div>
-      </div>
-    </section>
-
-
     <!-- ================= SEARCH & CONTROLS TOOLBAR ================= -->
-    <section class="bg-white rounded-xl shadow-sm border border-cream-300 p-4 mb-6 space-y-3">
+    <section id="inventoryToolbarSection" class="bg-white rounded-xl shadow-sm border border-cream-300 p-4 mb-6 space-y-3">
       <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
         <div class="relative w-full md:w-96">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -275,11 +308,19 @@
             class="w-full pl-10 pr-4 py-2.5 bg-cream-100/60 border border-cream-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-clay-700 focus:bg-white transition-all">
         </div>
 
-        <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
+        <div class="flex flex-wrap items-center justify-between md:justify-end gap-2.5 sm:gap-3 w-full md:w-auto">
           <button id="lowStockToggle" class="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-cream-300 text-xs sm:text-sm font-medium text-slate-700 hover:bg-cream-100 transition-all select-none">
             <span class="w-2.5 h-2.5 rounded-full bg-slate-300 transition-colors" id="lowStockIndicator"></span>
             <span>Low Stock Only</span>
           </button>
+
+          <!-- Machine / Location Sub-Filter Dropdown -->
+          <div id="machineFilterWrapper" class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-600 font-medium">
+            <i class="fa-solid fa-tractor text-slate-400"></i>
+            <select id="machineFilterSelect" class="bg-cream-100/60 border border-cream-300 rounded-lg px-2.5 py-2 text-slate-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-clay-700">
+              <option value="ALL">All Machines &amp; Locations</option>
+            </select>
+          </div>
 
           <div class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-600 font-medium">
             <i class="fa-solid fa-arrow-down-wide-short text-slate-400"></i>
@@ -312,6 +353,106 @@
         Clear Filters
       </button>
     </div>
+
+    <!-- ================= MAINTENANCE & SERVICE VIEW SECTION ================= -->
+    <section id="maintenanceSection" class="hidden space-y-6">
+      <!-- Maintenance Dashboard Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-lg bg-clay-50 text-clay-700 flex items-center justify-center text-lg flex-shrink-0">
+            <i class="fa-solid fa-wrench"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Services Logged</p>
+            <h3 id="maintStatTotal" class="text-2xl font-bold text-slate-800">0</h3>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-lg bg-farmgreen-50 text-farmgreen-700 flex items-center justify-center text-lg flex-shrink-0">
+            <i class="fa-solid fa-tractor"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Machines Serviced</p>
+            <h3 id="maintStatMachines" class="text-2xl font-bold text-slate-800">0</h3>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-lg flex-shrink-0">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Upcoming / Due</p>
+            <h3 id="maintStatUpcoming" class="text-2xl font-bold text-amber-700">0</h3>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg flex-shrink-0">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Service Cost</p>
+            <h3 id="maintStatTotalCost" class="text-xl sm:text-2xl font-bold text-slate-800">$0.00</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Controls & Filters Toolbar -->
+      <div class="bg-white rounded-xl shadow-sm border border-cream-300 p-4 space-y-3">
+        <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div class="relative w-full md:w-80">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="maintenanceSearchInput" placeholder="Search task, tractor, mechanic, parts..." 
+              class="w-full pl-10 pr-4 py-2.5 bg-cream-100/60 border border-cream-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-clay-700 focus:bg-white transition-all">
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between md:justify-end gap-2.5 sm:gap-3 w-full md:w-auto">
+            <!-- Machine Filter -->
+            <div class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-600 font-medium">
+              <i class="fa-solid fa-tractor text-slate-400"></i>
+              <select id="maintMachineFilterSelect" class="bg-cream-100/60 border border-cream-300 rounded-lg px-2.5 py-2 text-slate-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-clay-700">
+                <option value="ALL">All Equipment</option>
+              </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-600 font-medium">
+              <i class="fa-solid fa-filter text-slate-400"></i>
+              <select id="maintStatusFilterSelect" class="bg-cream-100/60 border border-cream-300 rounded-lg px-2.5 py-2 text-slate-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-clay-700">
+                <option value="ALL">All Statuses</option>
+                <option value="Completed">Completed</option>
+                <option value="Scheduled">Scheduled / Due</option>
+                <option value="Urgent">Needs Attention</option>
+              </select>
+            </div>
+
+            <!-- Log Service Button -->
+            <button onclick="openMaintenanceModal()" class="bg-clay-700 hover:bg-clay-800 text-white text-xs sm:text-sm font-bold px-3.5 py-2 rounded-lg shadow transition-transform active:scale-95 flex items-center gap-1.5 whitespace-nowrap">
+              <i class="fa-solid fa-screwdriver-wrench text-harvestgold-400"></i>
+              <span>Log Service</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Log Cards Grid -->
+      <div id="maintenanceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Service cards injected dynamically -->
+      </div>
+
+      <div id="maintenanceEmptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-cream-300 shadow-sm">
+        <div class="w-16 h-16 bg-cream-100 text-clay-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fa-solid fa-toolbox"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-800 font-serif">No service records found</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">No maintenance logs match your current filter. Record an oil change, inspection, or maintenance event.</p>
+        <button onclick="openMaintenanceModal()" class="mt-4 px-4 py-2 bg-clay-700 text-white rounded-lg text-xs font-bold hover:bg-clay-800 transition-colors shadow">
+          + Log First Service Record
+        </button>
+      </div>
+    </section>
 
   </main>
 
@@ -488,13 +629,18 @@
         <div class="grid grid-cols-2 gap-2.5 pt-1">
           <button id="exportJsonBtn" class="px-3 py-3 bg-cream-200 hover:bg-cream-300 text-clay-900 rounded-xl font-bold flex flex-col items-center justify-center gap-1 border border-cream-300 transition-colors">
             <i class="fa-solid fa-file-code text-clay-700 text-lg"></i>
-            <span>Export JSON File</span>
+            <span>Export Full Backup (JSON)</span>
           </button>
           <button id="exportCsvBtn" class="px-3 py-3 bg-cream-200 hover:bg-cream-300 text-clay-900 rounded-xl font-bold flex flex-col items-center justify-center gap-1 border border-cream-300 transition-colors">
             <i class="fa-solid fa-file-csv text-farmgreen-700 text-lg"></i>
-            <span>Export Excel (CSV)</span>
+            <span>Export Inventory (CSV)</span>
           </button>
         </div>
+
+        <button id="exportMaintCsvBtn" class="w-full py-2.5 bg-cream-200 hover:bg-cream-300 text-clay-900 rounded-xl font-bold flex items-center justify-center gap-2 border border-cream-300 transition-colors text-xs">
+          <i class="fa-solid fa-screwdriver-wrench text-clay-700"></i>
+          <span>Export Equipment Service Log (CSV)</span>
+        </button>
 
         <div class="border-t border-cream-300 pt-3 space-y-2">
           <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px]">Import Backup File</label>
@@ -601,6 +747,104 @@
   </div>
 
 
+  <!-- ================= MODAL 6: ADD / EDIT EQUIPMENT SERVICE RECORD ================= -->
+  <div id="maintenanceModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in max-h-[92vh] flex flex-col">
+      <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-screwdriver-wrench text-harvestgold-500 text-lg"></i>
+          <h2 id="maintModalTitle" class="font-serif font-bold text-lg">Log Equipment Service</h2>
+        </div>
+        <button id="closeMaintModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <form id="maintForm" class="p-6 overflow-y-auto space-y-4 flex-grow text-xs sm:text-sm">
+        <input type="hidden" id="maintId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Equipment / Machine *</label>
+            <input type="text" id="maintEquipment" required list="maintEquipmentDatalist" placeholder="e.g. John Deere 8320, Case Combine"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+            <datalist id="maintEquipmentDatalist"></datalist>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Status *</label>
+            <select id="maintStatus" required class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+              <option value="Completed">Completed</option>
+              <option value="Scheduled">Scheduled / Upcoming</option>
+              <option value="Urgent">Needs Attention</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Service Task / Description *</label>
+          <input type="text" id="maintTask" required placeholder="e.g. 500-Hr Engine Oil &amp; Filter Change, Hydraulic Hose Replacement"
+            class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Date Performed *</label>
+            <input type="date" id="maintDate" required
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Engine Hours / Miles</label>
+            <input type="text" id="maintHours" placeholder="e.g. 2,845 hrs"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Total Cost ($)</label>
+            <input type="number" id="maintCost" min="0" step="any" placeholder="0.00"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Serviced By</label>
+            <input type="text" id="maintServicedBy" placeholder="e.g. Troy Anderson, Farm Shop, Dealer"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Next Service Due</label>
+            <input type="text" id="maintNextDue" placeholder="e.g. 3,345 hrs / Spring 2027"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Parts &amp; Fluids Used</label>
+          <input type="text" id="maintPartsUsed" placeholder="e.g. JD Oil Filter RE504836, 10 gal Plus-50 II 15W-40"
+            class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Service Notes &amp; Observations</label>
+          <textarea id="maintNotes" rows="2" placeholder="e.g. Cleaned drain plug magnet, slight wear on fan belt, oil sample sent for lab test..."
+            class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end space-x-3 border-t border-cream-300">
+          <button type="button" id="cancelMaintBtn" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-clay-700 hover:bg-clay-800 text-white font-bold rounded-lg shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save Service Record</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
   <!-- ================= TOAST CONTAINER ================= -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none"></div>
 
@@ -700,16 +944,65 @@
       'Seeds & Crops',
       'Tractor & Machinery Parts',
       'Chemicals & Fertilizer',
+      'Service & Maintenance',
       'Livestock & Feed',
       'Hardware & Tools'
     ];
 
-    // Application State
+    const DEFAULT_MAINTENANCE_DATA = [
+      {
+        id: 'm1',
+        equipment: 'John Deere 8320',
+        task: '500-Hr Engine Oil & Filter Service',
+        date: '2026-10-18',
+        hours: '2,845 hrs',
+        servicedBy: 'Troy Anderson',
+        partsUsed: 'JD Oil Filter RE504836, 10 gal Plus-50 II 15W-40',
+        cost: 168.50,
+        nextDue: '3,345 hrs / Spring 2027',
+        status: 'Completed',
+        notes: 'Sampled oil for lab analysis. Clean drain plug magnet. All zerks greased.'
+      },
+      {
+        id: 'm2',
+        equipment: 'Case IH Combine',
+        task: 'Feeder House Chain & Rotor Belt Inspection',
+        date: '2026-10-04',
+        hours: '1,420 hrs',
+        servicedBy: 'Farm Shop',
+        partsUsed: 'Drive Belt #87438210, 4x Chain Links',
+        cost: 420.00,
+        nextDue: 'Pre-Harvest 2027',
+        status: 'Completed',
+        notes: 'Tensioned feeder house chain to 1/2 in deflection. Replaced worn drive belt.'
+      },
+      {
+        id: 'm3',
+        equipment: 'Kinze 3600 Planter',
+        task: 'Opening Disc Blades & Seed Tube Sensor Check',
+        date: '2026-11-01',
+        hours: 'Annual Service',
+        servicedBy: 'Troy & Dad',
+        partsUsed: '32x Disc Openers, 4x Seed Tubes',
+        cost: 850.00,
+        nextDue: 'Pre-Planting April 2027',
+        status: 'Completed',
+        notes: 'Shimmed openers for 1.75 inch contact point. Cleaned and tested all optical seed sensors.'
+      }
+    ];
+
+   // Application State
     let state = {
       items: [],
       categories: [],
+      maintenanceLogs: [],
       activeCategory: 'All Items',
+      currentView: 'dashboard', // SPA router view
+      selectedMachine: 'ALL',
       searchQuery: '',
+      maintenanceSearchQuery: '',
+      maintenanceSelectedMachine: 'ALL',
+      maintenanceSelectedStatus: 'ALL',
       lowStockOnly: false,
       sortBy: 'name-asc',
       isCloudConnected: false,
@@ -723,7 +1016,19 @@
     const sortSelect = document.getElementById('sortSelect');
     const lowStockToggle = document.getElementById('lowStockToggle');
     const lowStockIndicator = document.getElementById('lowStockIndicator');
-    const dynamicTabList = document.getElementById('dynamicTabList');
+    const topNavViewList = document.getElementById('topNavViewList');
+    const machineFilterSelect = document.getElementById('machineFilterSelect');
+
+    const inventoryMetricsSection = document.getElementById('inventoryMetricsSection');
+    const inventoryToolbarSection = document.getElementById('inventoryToolbarSection');
+    const maintenanceSection = document.getElementById('maintenanceSection');
+    const maintenanceGrid = document.getElementById('maintenanceGrid');
+    const maintenanceEmptyState = document.getElementById('maintenanceEmptyState');
+    const maintenanceModal = document.getElementById('maintenanceModal');
+    const maintForm = document.getElementById('maintForm');
+    const maintenanceSearchInput = document.getElementById('maintenanceSearchInput');
+    const maintMachineFilterSelect = document.getElementById('maintMachineFilterSelect');
+    const maintStatusFilterSelect = document.getElementById('maintStatusFilterSelect');
 
     const statTotalItems = document.getElementById('statTotalItems');
     const statLowStock = document.getElementById('statLowStock');
@@ -745,10 +1050,11 @@
 
     // INITIALIZATION & REAL-TIME LISTENERS
     function init() {
+      loadLocalFallback();
       setupConnectionListener();
       setupCloudRealtimeListener();
       setupEventListeners();
-      loadLocalFallback();
+      renderTabs();
       render();
     }
 
@@ -776,12 +1082,24 @@
         if (data) {
           state.items = data.items || [];
           state.categories = data.categories || DEFAULT_CATEGORIES;
+          state.maintenanceLogs = data.maintenanceLogs || DEFAULT_MAINTENANCE_DATA;
+
+          // Ensure Service & Maintenance is present in categories
+          if (!state.categories.includes('Service & Maintenance')) {
+            const chemIdx = state.categories.indexOf('Chemicals & Fertilizer');
+            if (chemIdx !== -1) {
+              state.categories.splice(chemIdx + 1, 0, 'Service & Maintenance');
+            } else {
+              state.categories.push('Service & Maintenance');
+            }
+          }
+
           saveLocalFallback();
           renderTabs();
           render();
         } else {
           // If cloud database node is empty, seed with initial Anderson Farm data
-          pushDataToCloud(DEFAULT_FARM_DATA, DEFAULT_CATEGORIES);
+          pushDataToCloud(DEFAULT_FARM_DATA, DEFAULT_CATEGORIES, DEFAULT_MAINTENANCE_DATA);
         }
       }, (error) => {
         console.error("Firebase sync error:", error);
@@ -790,10 +1108,15 @@
     }
 
     // Save to Cloud Realtime Database
-    function pushDataToCloud(itemsToSave = state.items, categoriesToSave = state.categories) {
+    function pushDataToCloud(
+      itemsToSave = state.items, 
+      categoriesToSave = state.categories, 
+      maintenanceToSave = state.maintenanceLogs
+    ) {
       cloudRef.set({
         items: itemsToSave,
         categories: categoriesToSave,
+        maintenanceLogs: maintenanceToSave,
         lastUpdated: new Date().toISOString()
       }).then(() => {
         saveLocalFallback();
@@ -808,69 +1131,189 @@
     function saveLocalFallback() {
       localStorage.setItem('aff_inventory_items', JSON.stringify(state.items));
       localStorage.setItem('aff_inventory_categories', JSON.stringify(state.categories));
+      localStorage.setItem('aff_inventory_maintenance', JSON.stringify(state.maintenanceLogs));
     }
 
     function loadLocalFallback() {
       try {
         const items = localStorage.getItem('aff_inventory_items');
         const categories = localStorage.getItem('aff_inventory_categories');
-        if (items) state.items = JSON.parse(items);
-        if (categories) state.categories = JSON.parse(categories);
+        const maintenance = localStorage.getItem('aff_inventory_maintenance');
+
+        state.items = items ? JSON.parse(items) : [...DEFAULT_FARM_DATA];
+        state.categories = categories ? JSON.parse(categories) : [...DEFAULT_CATEGORIES];
+        state.maintenanceLogs = maintenance ? JSON.parse(maintenance) : [...DEFAULT_MAINTENANCE_DATA];
+
+        if (!state.categories.includes('Service & Maintenance')) {
+          const chemIdx = state.categories.indexOf('Chemicals & Fertilizer');
+          if (chemIdx !== -1) {
+            state.categories.splice(chemIdx + 1, 0, 'Service & Maintenance');
+          } else {
+            state.categories.push('Service & Maintenance');
+          }
+        }
       } catch (e) {
         state.items = [...DEFAULT_FARM_DATA];
         state.categories = [...DEFAULT_CATEGORIES];
+        state.maintenanceLogs = [...DEFAULT_MAINTENANCE_DATA];
       }
     }
 
-    // RENDER CATEGORY TABS
+    // Helper to assign visual icons to farm categories
+    function getCategoryIcon(cat) {
+      const c = (cat || '').toLowerCase();
+      if (c === 'all items' || c === 'dashboard') return 'fa-solid fa-chart-pie';
+      if (c.includes('service') || c.includes('maint')) return 'fa-solid fa-screwdriver-wrench text-clay-700';
+      if (c.includes('seed') || c.includes('crop')) return 'fa-solid fa-seedling text-farmgreen-600';
+      if (c.includes('machin') || c.includes('part') || c.includes('tractor')) return 'fa-solid fa-gears text-clay-600';
+      if (c.includes('chem') || c.includes('fertil')) return 'fa-solid fa-flask text-amber-600';
+      if (c.includes('livestock') || c.includes('feed')) return 'fa-solid fa-wheat-awn text-emerald-600';
+      if (c.includes('hardware') || c.includes('tool')) return 'fa-solid fa-wrench text-slate-600';
+      return 'fa-solid fa-folder text-harvestgold-600';
+    }
+
+    // RENDER TOP-LEVEL DYNAMIC VIEW TABS
     function renderTabs() {
+      if (!topNavViewList) return;
+
       if (!state.categories || state.categories.length === 0) {
         state.categories = [...DEFAULT_CATEGORIES];
       }
 
-      dynamicTabList.innerHTML = state.categories.map(cat => {
-        const isActive = state.activeCategory === cat;
+      // Ensure 'All Items' is first in the list
+      if (!state.categories.includes('All Items')) {
+        state.categories.unshift('All Items');
+      }
+
+      topNavViewList.innerHTML = state.categories.map(cat => {
+        const isDashboard = cat === 'All Items';
+        const isActive = (state.activeCategory === cat) || 
+          (isDashboard && (state.activeCategory === 'All Items' || state.currentView === 'dashboard'));
+
         const activeStyles = isActive 
-          ? 'bg-clay-700 text-white shadow font-bold border-clay-700' 
+          ? 'bg-clay-700 text-white shadow-sm font-bold border-clay-700' 
           : 'bg-cream-100 text-slate-700 hover:bg-cream-200 border-cream-300 font-semibold';
 
+        const displayName = isDashboard ? 'Dashboard' : cat;
+        const iconClass = getCategoryIcon(cat);
+
         return `
-          <button onclick="setActiveTab('${escapeHtml(cat)}')" 
-            class="px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all border flex items-center gap-1.5 ${activeStyles}">
-            <span>${escapeHtml(cat)}</span>
+          <button onclick="switchView('${escapeHtml(cat)}')" 
+            class="nav-view-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm flex items-center gap-2 transition-all whitespace-nowrap border ${activeStyles}">
+            <i class="${iconClass}"></i>
+            <span>${escapeHtml(displayName)}</span>
           </button>
         `;
       }).join('');
+
+      // Auto-scroll the active tab into view if needed
+      setTimeout(() => {
+        const activeBtn = topNavViewList.querySelector('.nav-view-btn.bg-clay-700');
+        if (activeBtn && typeof activeBtn.scrollIntoView === 'function') {
+          activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+      }, 50);
     }
 
-    window.setActiveTab = function(cat) {
-      state.activeCategory = cat;
+    function scrollNavTabs(delta) {
+      if (topNavViewList) {
+        topNavViewList.scrollBy({ left: delta, behavior: 'smooth' });
+      }
+    }
+    window.scrollNavTabs = scrollNavTabs;
+
+    // SPA View Switching Logic
+    function switchView(viewName) {
+      let targetCategory = viewName;
+      if (viewName === 'dashboard') targetCategory = 'All Items';
+      else if (viewName === 'seeds') targetCategory = 'Seeds & Crops';
+      else if (viewName === 'parts') targetCategory = 'Tractor & Machinery Parts';
+      else if (viewName === 'chemicals') targetCategory = 'Chemicals & Fertilizer';
+      else if (viewName === 'maintenance' || viewName === 'service' || viewName.toLowerCase().includes('maint')) targetCategory = 'Service & Maintenance';
+
+      state.currentView = targetCategory;
+      state.activeCategory = targetCategory;
+
       renderTabs();
       render();
-    };
+    }
+    window.switchView = switchView;
+    window.setActiveTab = switchView;
 
-    function populateCategoryDropdown() {
+    function openTabManagementModal() {
+      renderTabManagementList();
+      customTabModal.classList.remove('hidden');
+    }
+    window.openTabManagementModal = openTabManagementModal;
+
+    // Populate Machine / Location Sub-Filter Dropdown
+    function populateMachineSubFilter() {
+      if (!machineFilterSelect) return;
+
+      const locations = Array.from(new Set(
+        state.items
+          .map(item => (item.location || '').trim())
+          .filter(loc => loc.length > 0)
+      )).sort((a, b) => a.localeCompare(b));
+
+      const currentSelection = state.selectedMachine || 'ALL';
+
+      let optionsHtml = '<option value="ALL">All Machines &amp; Locations</option>';
+      locations.forEach(loc => {
+        const selected = (currentSelection === loc) ? ' selected' : '';
+        optionsHtml += `<option value="${escapeHtml(loc)}"${selected}>${escapeHtml(loc)}</option>`;
+      });
+
+      machineFilterSelect.innerHTML = optionsHtml;
+      if (currentSelection !== 'ALL' && !locations.includes(currentSelection)) {
+        state.selectedMachine = 'ALL';
+        machineFilterSelect.value = 'ALL';
+      } else {
+        machineFilterSelect.value = currentSelection;
+      }
+    }
+    function populateCategoryDropdown(selectedCategory) {
       const select = document.getElementById('itemCategory');
       const validCategories = state.categories.filter(c => c !== 'All Items');
       select.innerHTML = validCategories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      if (selectedCategory && validCategories.includes(selectedCategory)) {
+        select.value = selectedCategory;
+      }
     }
 
     function renderTabManagementList() {
       const container = document.getElementById('tabManagementList');
       const customTabs = state.categories.filter(c => c !== 'All Items');
 
-      container.innerHTML = customTabs.map(cat => `
-        <div class="flex items-center justify-between p-2 bg-cream-100 rounded-lg border border-cream-300 text-xs">
-          <span class="font-semibold text-slate-800">${escapeHtml(cat)}</span>
-          <button onclick="deleteCustomTab('${escapeHtml(cat).replace(/'/g, "\\'")}')" 
-            class="text-red-600 hover:text-red-800 p-1 font-bold" title="Delete Tab">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      `).join('');
+      container.innerHTML = customTabs.map(cat => {
+        const isProtected = (cat === 'Service & Maintenance');
+        return `
+          <div class="flex items-center justify-between p-2.5 bg-cream-100 rounded-lg border border-cream-300 text-xs">
+            <span class="font-semibold text-slate-800 flex items-center gap-2">
+              <i class="${getCategoryIcon(cat)}"></i>
+              <span>${escapeHtml(cat)}</span>
+              ${isProtected ? '<span class="text-[10px] bg-farmgreen-100 text-farmgreen-800 font-bold px-1.5 py-0.5 rounded border border-farmgreen-200">System Tab</span>' : ''}
+            </span>
+            ${isProtected ? `
+              <span class="text-slate-400 text-xs px-2 flex items-center gap-1 font-medium select-none" title="Core System Tab (Protected)">
+                <i class="fa-solid fa-lock text-slate-400"></i>
+              </span>
+            ` : `
+              <button onclick="deleteCustomTab('${escapeHtml(cat).replace(/'/g, "\\'")}')" 
+                class="text-red-600 hover:text-red-800 p-1 font-bold transition-colors" title="Delete Tab">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            `}
+          </div>
+        `;
+      }).join('');
     }
 
-    window.deleteCustomTab = function(catName) {
+    function deleteCustomTab(catName) {
+      if (catName === 'Service & Maintenance' || catName === 'All Items') {
+        showToast(`"${catName}" is a system tab and cannot be deleted.`);
+        return;
+      }
       if (state.categories.length <= 2) {
         showToast("Must keep at least one category tab");
         return;
@@ -880,14 +1323,18 @@
         "Items assigned to this tab will remain visible under 'All Items'.",
         () => {
           state.categories = state.categories.filter(c => c !== catName);
-          if (state.activeCategory === catName) state.activeCategory = 'All Items';
+          if (state.activeCategory === catName) {
+            state.activeCategory = 'All Items';
+            state.currentView = 'dashboard';
+          }
           pushDataToCloud();
           renderTabs();
           renderTabManagementList();
           showToast(`Deleted tab "${catName}"`);
         }
       );
-    };
+    }
+    window.deleteCustomTab = deleteCustomTab;
 
     // Quick Quantity Control (+ / -)
     window.adjustQuantity = function(id, delta) {
@@ -938,8 +1385,9 @@
 
         const matchesCategory = state.activeCategory === 'All Items' || item.category === state.activeCategory;
         const matchesLowStock = !state.lowStockOnly || (Number(item.quantity) <= Number(item.minStock));
+        const matchesMachine = !state.selectedMachine || state.selectedMachine === 'ALL' || ((item.location || '').trim().toLowerCase() === state.selectedMachine.toLowerCase());
 
-        return matchesSearch && matchesCategory && matchesLowStock;
+        return matchesSearch && matchesCategory && matchesLowStock && matchesMachine;
       }).sort((a, b) => {
         if (state.sortBy === 'name-asc') return a.name.localeCompare(b.name);
         if (state.sortBy === 'name-desc') return b.name.localeCompare(a.name);
@@ -952,7 +1400,61 @@
     }
 
     function render() {
+      const banner = document.getElementById('viewBanner');
+      const bannerTitle = document.getElementById('viewBannerTitle');
+      const bannerSubtitle = document.getElementById('viewBannerSubtitle');
+      const openAddModalBtn = document.getElementById('openAddModalBtn');
+
+      if (state.currentView === 'Service & Maintenance') {
+        banner.classList.remove('hidden');
+        bannerTitle.textContent = '🛠️ Equipment Service & Maintenance';
+        bannerSubtitle.textContent = 'Track service history, oil changes, engine hours, part replacements, and upcoming intervals.';
+
+        if (openAddModalBtn) {
+          openAddModalBtn.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i> <span>Log Service</span>';
+        }
+
+        if (inventoryMetricsSection) inventoryMetricsSection.classList.add('hidden');
+        if (inventoryToolbarSection) inventoryToolbarSection.classList.add('hidden');
+        if (inventoryGrid) inventoryGrid.classList.add('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
+        if (maintenanceSection) maintenanceSection.classList.remove('hidden');
+
+        renderMaintenanceView();
+        return;
+      }
+
+      if (openAddModalBtn) {
+        openAddModalBtn.innerHTML = '<i class="fa-solid fa-plus"></i> <span>Add Item</span>';
+      }
+
+      if (maintenanceSection) maintenanceSection.classList.add('hidden');
+      if (inventoryMetricsSection) inventoryMetricsSection.classList.remove('hidden');
+      if (inventoryToolbarSection) inventoryToolbarSection.classList.remove('hidden');
+      if (inventoryGrid) inventoryGrid.classList.remove('hidden');
+
       updateMetrics();
+      populateMachineSubFilter();
+
+      if (state.currentView !== 'dashboard' && state.activeCategory !== 'All Items') {
+        banner.classList.remove('hidden');
+        if (state.activeCategory === 'Seeds & Crops') {
+          bannerTitle.textContent = '🌽 Seed & Crop Inventory';
+          bannerSubtitle.textContent = 'Showing hybrid varieties, planting windows, and seed storage records.';
+        } else if (state.activeCategory === 'Tractor & Machinery Parts') {
+          bannerTitle.textContent = '🚜 Machinery & Tractor Parts';
+          bannerSubtitle.textContent = 'Showing maintenance parts, filter numbers, and equipment assignments.';
+        } else if (state.activeCategory === 'Chemicals & Fertilizer') {
+          bannerTitle.textContent = '🧪 Chemicals & Fertilizer';
+          bannerSubtitle.textContent = 'Showing liquid/dry application stock, bulk tanks, and application rates.';
+        } else {
+          bannerTitle.textContent = `📁 ${state.activeCategory}`;
+          bannerSubtitle.textContent = `Showing all inventory items categorized under ${state.activeCategory}.`;
+        }
+      } else {
+        banner.classList.add('hidden');
+      }
+
       const filtered = getFilteredItems();
 
       if (filtered.length === 0) {
@@ -1064,12 +1566,284 @@
       }).join('');
     }
 
+    // ================= EQUIPMENT SERVICE & MAINTENANCE MODULE =================
+    function renderMaintenanceView() {
+      // 1. Calculate & Update Maintenance Stats
+      const totalLogs = state.maintenanceLogs.length;
+      const uniqueMachines = new Set(state.maintenanceLogs.map(m => (m.equipment || '').trim()).filter(Boolean)).size;
+      const upcomingServices = state.maintenanceLogs.filter(m => m.status === 'Scheduled' || m.status === 'Urgent').length;
+      const totalMaintCost = state.maintenanceLogs.reduce((sum, m) => sum + (parseFloat(m.cost) || 0), 0);
+
+      const maintStatTotal = document.getElementById('maintStatTotal');
+      const maintStatMachines = document.getElementById('maintStatMachines');
+      const maintStatUpcoming = document.getElementById('maintStatUpcoming');
+      const maintStatTotalCost = document.getElementById('maintStatTotalCost');
+
+      if (maintStatTotal) maintStatTotal.textContent = totalLogs;
+      if (maintStatMachines) maintStatMachines.textContent = uniqueMachines;
+      if (maintStatUpcoming) maintStatUpcoming.textContent = upcomingServices;
+      if (maintStatTotalCost) maintStatTotalCost.textContent = `$${totalMaintCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+      // 2. Populate Equipment Filter & Datalist
+      populateMaintenanceMachineFilter();
+
+      // 3. Filter Maintenance Logs
+      const filtered = getFilteredMaintenanceLogs();
+
+      if (filtered.length === 0) {
+        if (maintenanceGrid) maintenanceGrid.innerHTML = '';
+        if (maintenanceEmptyState) maintenanceEmptyState.classList.remove('hidden');
+        return;
+      }
+
+      if (maintenanceEmptyState) maintenanceEmptyState.classList.add('hidden');
+
+      if (maintenanceGrid) {
+        maintenanceGrid.innerHTML = filtered.map(log => {
+          let statusBadge = '';
+          if (log.status === 'Completed') {
+            statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+              <i class="fa-solid fa-check text-[10px]"></i> Completed
+            </span>`;
+          } else if (log.status === 'Scheduled') {
+            statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
+              <i class="fa-solid fa-calendar-check text-[10px]"></i> Scheduled
+            </span>`;
+          } else {
+            statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+              <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Attention
+            </span>`;
+          }
+
+          const costDisplay = (log.cost !== undefined && log.cost !== null && log.cost !== '') 
+            ? `$${parseFloat(log.cost).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+            : 'N/A';
+
+          return `
+            <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-cream-300 hover:shadow-md transition-all flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-clay-700 bg-cream-200 px-2.5 py-1 rounded-md border border-cream-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-tractor text-clay-700"></i>
+                    <span>${escapeHtml(log.equipment)}</span>
+                  </span>
+                  ${statusBadge}
+                </div>
+
+                <h3 class="font-serif font-bold text-slate-900 text-base sm:text-lg leading-snug mb-2">
+                  ${escapeHtml(log.task)}
+                </h3>
+
+                <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-3 bg-cream-100/50 p-2.5 rounded-xl border border-cream-200">
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-days text-clay-700 w-4"></i>
+                    <span>${escapeHtml(log.date || 'N/A')}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-gauge-high text-slate-400 w-4"></i>
+                    <span>${escapeHtml(log.hours || 'N/A')}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-gear text-slate-400 w-4"></i>
+                    <span class="truncate">${escapeHtml(log.servicedBy || 'N/A')}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-receipt text-farmgreen-700 w-4"></i>
+                    <span class="font-bold text-slate-800">${costDisplay}</span>
+                  </div>
+                </div>
+
+                ${log.partsUsed ? `
+                  <div class="text-xs text-slate-700 mb-2.5 flex items-start gap-1.5">
+                    <i class="fa-solid fa-wrench text-clay-600 mt-0.5 flex-shrink-0"></i>
+                    <span class="font-medium leading-relaxed"><b>Parts:</b> ${escapeHtml(log.partsUsed)}</span>
+                  </div>
+                ` : ''}
+
+                ${log.nextDue ? `
+                  <div class="mb-2.5 px-2.5 py-1.5 rounded-lg bg-harvestgold-500/10 border border-harvestgold-500/30 text-xs text-amber-900 font-semibold flex items-center gap-1.5">
+                    <i class="fa-solid fa-bell text-harvestgold-600"></i>
+                    <span>Next Due: ${escapeHtml(log.nextDue)}</span>
+                  </div>
+                ` : ''}
+
+                ${log.notes ? `
+                  <p class="text-xs text-slate-500 bg-cream-100 p-2 rounded-lg italic border border-cream-200 mb-2">
+                    "${escapeHtml(log.notes)}"
+                  </p>
+                ` : ''}
+              </div>
+
+              <div class="pt-3 border-t border-cream-300 flex items-center justify-between mt-2">
+                <span class="text-[11px] text-slate-400 font-medium">Record ID: #${escapeHtml(log.id)}</span>
+                <div class="flex items-center gap-2">
+                  <button onclick="openEditMaintenanceModal('${escapeHtml(log.id)}')" 
+                    class="px-2.5 py-1 text-xs font-bold text-clay-700 hover:bg-cream-100 rounded-lg transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Edit</span>
+                  </button>
+                  <button onclick="promptDeleteMaintenance('${escapeHtml(log.id)}', '${escapeHtml(log.task).replace(/'/g, "\\'")}')" 
+                    class="px-2.5 py-1 text-xs font-bold text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function populateMaintenanceMachineFilter() {
+      const machines = Array.from(new Set([
+        ...state.items.map(i => (i.location || '').trim()),
+        ...state.maintenanceLogs.map(m => (m.equipment || '').trim())
+      ])).filter(Boolean).sort((a, b) => a.localeCompare(b));
+
+      if (maintMachineFilterSelect) {
+        const cur = state.maintenanceSelectedMachine || 'ALL';
+        let opts = '<option value="ALL">All Equipment</option>';
+        machines.forEach(m => {
+          opts += `<option value="${escapeHtml(m)}"${cur === m ? ' selected' : ''}>${escapeHtml(m)}</option>`;
+        });
+        maintMachineFilterSelect.innerHTML = opts;
+      }
+
+      const datalist = document.getElementById('maintEquipmentDatalist');
+      if (datalist) {
+        datalist.innerHTML = machines.map(m => `<option value="${escapeHtml(m)}"></option>`).join('');
+      }
+    }
+
+    function getFilteredMaintenanceLogs() {
+      return state.maintenanceLogs.filter(log => {
+        const query = (state.maintenanceSearchQuery || '').toLowerCase();
+        const matchesQuery = !query ||
+          (log.equipment && log.equipment.toLowerCase().includes(query)) ||
+          (log.task && log.task.toLowerCase().includes(query)) ||
+          (log.servicedBy && log.servicedBy.toLowerCase().includes(query)) ||
+          (log.partsUsed && log.partsUsed.toLowerCase().includes(query)) ||
+          (log.notes && log.notes.toLowerCase().includes(query));
+
+        const matchesMachine = !state.maintenanceSelectedMachine || state.maintenanceSelectedMachine === 'ALL' ||
+          ((log.equipment || '').trim().toLowerCase() === state.maintenanceSelectedMachine.toLowerCase());
+
+        const matchesStatus = !state.maintenanceSelectedStatus || state.maintenanceSelectedStatus === 'ALL' ||
+          log.status === state.maintenanceSelectedStatus;
+
+        return matchesQuery && matchesMachine && matchesStatus;
+      }).sort((a, b) => {
+        const dateA = a.date || '';
+        const dateB = b.date || '';
+        return dateB.localeCompare(dateA);
+      });
+    }
+
+    function openMaintenanceModal() {
+      document.getElementById('maintModalTitle').textContent = 'Log Equipment Service';
+      document.getElementById('maintId').value = '';
+      if (maintForm) maintForm.reset();
+      document.getElementById('maintDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('maintStatus').value = 'Completed';
+
+      if (state.maintenanceSelectedMachine && state.maintenanceSelectedMachine !== 'ALL') {
+        document.getElementById('maintEquipment').value = state.maintenanceSelectedMachine;
+      } else if (state.selectedMachine && state.selectedMachine !== 'ALL') {
+        document.getElementById('maintEquipment').value = state.selectedMachine;
+      }
+
+      populateMaintenanceMachineFilter();
+      if (maintenanceModal) maintenanceModal.classList.remove('hidden');
+    }
+    window.openMaintenanceModal = openMaintenanceModal;
+
+    function openEditMaintenanceModal(id) {
+      const log = state.maintenanceLogs.find(m => m.id === id);
+      if (!log) return;
+
+      populateMaintenanceMachineFilter();
+      document.getElementById('maintModalTitle').textContent = 'Edit Service Record';
+      document.getElementById('maintId').value = log.id;
+      document.getElementById('maintEquipment').value = log.equipment || '';
+      document.getElementById('maintTask').value = log.task || '';
+      document.getElementById('maintDate').value = log.date || new Date().toISOString().slice(0, 10);
+      document.getElementById('maintHours').value = log.hours || '';
+      document.getElementById('maintStatus').value = log.status || 'Completed';
+      document.getElementById('maintServicedBy').value = log.servicedBy || '';
+      document.getElementById('maintPartsUsed').value = log.partsUsed || '';
+      document.getElementById('maintCost').value = (log.cost !== undefined && log.cost !== null) ? log.cost : '';
+      document.getElementById('maintNextDue').value = log.nextDue || '';
+      document.getElementById('maintNotes').value = log.notes || '';
+
+      if (maintenanceModal) maintenanceModal.classList.remove('hidden');
+    }
+    window.openEditMaintenanceModal = openEditMaintenanceModal;
+
+    function closeMaintenanceModal() {
+      if (maintenanceModal) maintenanceModal.classList.add('hidden');
+    }
+    window.closeMaintenanceModal = closeMaintenanceModal;
+
+    function promptDeleteMaintenance(id, task) {
+      openConfirmModal(
+        'Delete Service Record?',
+        `Are you sure you want to remove the service record for "${task}"?`,
+        () => {
+          state.maintenanceLogs = state.maintenanceLogs.filter(m => m.id !== id);
+          pushDataToCloud();
+          render();
+          showToast('Service record deleted');
+        }
+      );
+    }
+    window.promptDeleteMaintenance = promptDeleteMaintenance;
+
+    function exportMaintenanceCSV() {
+      if (state.maintenanceLogs.length === 0) return showToast('No maintenance records to export');
+
+      const headers = ['Equipment', 'Service Task', 'Status', 'Date Performed', 'Engine Hours/Miles', 'Serviced By', 'Cost ($)', 'Parts Used', 'Next Due', 'Notes'];
+      const rows = state.maintenanceLogs.map(m => [
+        `"${(m.equipment || '').replace(/"/g, '""')}"`,
+        `"${(m.task || '').replace(/"/g, '""')}"`,
+        `"${(m.status || '').replace(/"/g, '""')}"`,
+        `"${(m.date || '').replace(/"/g, '""')}"`,
+        `"${(m.hours || '').replace(/"/g, '""')}"`,
+        `"${(m.servicedBy || '').replace(/"/g, '""')}"`,
+        (m.cost || 0),
+        `"${(m.partsUsed || '').replace(/"/g, '""')}"`,
+        `"${(m.nextDue || '').replace(/"/g, '""')}"`,
+        `"${(m.notes || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", encodeURI(csvContent));
+      downloadAnchor.setAttribute("download", `anderson_farm_maintenance_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Maintenance CSV Exported!');
+    }
+    window.exportMaintenanceCSV = exportMaintenanceCSV;
+
     // MODAL HANDLERS
     function openAddModal() {
       document.getElementById('modalTitle').textContent = 'Add Inventory Item';
       document.getElementById('itemId').value = '';
       itemForm.reset();
-      populateCategoryDropdown();
+
+      // Automatically default category to current active tab if not on All Items
+      const defaultCategory = (state.activeCategory && state.activeCategory !== 'All Items') 
+        ? state.activeCategory 
+        : null;
+      populateCategoryDropdown(defaultCategory);
+
+      // Pre-fill location if user currently has a specific machine/location filter selected
+      if (state.selectedMachine && state.selectedMachine !== 'ALL') {
+        document.getElementById('itemLocation').value = state.selectedMachine;
+      }
+
       itemModal.classList.remove('hidden');
     }
 
@@ -1178,10 +1952,14 @@
 
     // Backup & Export Functions
     function exportJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ items: state.items, categories: state.categories }, null, 2));
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ 
+        items: state.items, 
+        categories: state.categories,
+        maintenanceLogs: state.maintenanceLogs
+      }, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `anderson_farm_inventory_${new Date().toISOString().slice(0,10)}.json`);
+      downloadAnchor.setAttribute("download", `anderson_farm_backup_${new Date().toISOString().slice(0,10)}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
@@ -1232,8 +2010,13 @@
           if (imported.items && Array.isArray(imported.items)) {
             state.items = imported.items;
             if (imported.categories) state.categories = imported.categories;
+            if (imported.maintenanceLogs && Array.isArray(imported.maintenanceLogs)) {
+              state.maintenanceLogs = imported.maintenanceLogs;
+            }
             pushDataToCloud();
             shareModal.classList.add('hidden');
+            renderTabs();
+            render();
             showToast('Backup loaded and synced to cloud!');
           }
         } catch (err) {
@@ -1268,23 +2051,130 @@
         render();
       });
 
+      if (topNavViewList) {
+        topNavViewList.addEventListener('wheel', (e) => {
+          if (e.deltaY !== 0) {
+            e.preventDefault();
+            topNavViewList.scrollBy({ left: e.deltaY, behavior: 'auto' });
+          }
+        }, { passive: false });
+      }
+
+      if (machineFilterSelect) {
+        machineFilterSelect.addEventListener('change', (e) => {
+          state.selectedMachine = e.target.value;
+          render();
+        });
+      }
+
       document.getElementById('resetFiltersBtn').addEventListener('click', () => {
         state.searchQuery = '';
         state.activeCategory = 'All Items';
+        state.currentView = 'dashboard';
         state.lowStockOnly = false;
+        state.selectedMachine = 'ALL';
         searchInput.value = '';
+        if (machineFilterSelect) machineFilterSelect.value = 'ALL';
+        if (lowStockToggle) {
+          lowStockToggle.classList.remove('bg-amber-100', 'border-amber-300', 'text-amber-900');
+          lowStockIndicator.classList.remove('bg-amber-600');
+          lowStockIndicator.classList.add('bg-slate-300');
+        }
         renderTabs();
         render();
       });
 
-      document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
+      document.getElementById('openAddModalBtn').addEventListener('click', () => {
+        if (state.currentView === 'Service & Maintenance') {
+          openMaintenanceModal();
+        } else {
+          openAddModal();
+        }
+      });
       document.getElementById('closeModalBtn').addEventListener('click', closeModal);
       document.getElementById('cancelFormBtn').addEventListener('click', closeModal);
 
-      document.getElementById('openAddTabBtn').addEventListener('click', () => {
-        renderTabManagementList();
-        customTabModal.classList.remove('hidden');
-      });
+      // Maintenance Form Submission
+      if (maintForm) {
+        maintForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const id = document.getElementById('maintId').value;
+          const equipment = document.getElementById('maintEquipment').value.trim();
+          const task = document.getElementById('maintTask').value.trim();
+          const date = document.getElementById('maintDate').value;
+          const hours = document.getElementById('maintHours').value.trim();
+          const status = document.getElementById('maintStatus').value;
+          const servicedBy = document.getElementById('maintServicedBy').value.trim();
+          const partsUsed = document.getElementById('maintPartsUsed').value.trim();
+          const cost = parseFloat(document.getElementById('maintCost').value) || 0;
+          const nextDue = document.getElementById('maintNextDue').value.trim();
+          const notes = document.getElementById('maintNotes').value.trim();
+
+          const record = {
+            id: id || ('m_' + Date.now().toString()),
+            equipment,
+            task,
+            date,
+            hours,
+            status,
+            servicedBy,
+            partsUsed,
+            cost,
+            nextDue,
+            notes
+          };
+
+          if (id) {
+            const idx = state.maintenanceLogs.findIndex(m => m.id === id);
+            if (idx !== -1) state.maintenanceLogs[idx] = record;
+            showToast(`Updated service for "${equipment}"`);
+          } else {
+            state.maintenanceLogs.unshift(record);
+            showToast(`Logged service for "${equipment}"`);
+          }
+
+          pushDataToCloud();
+          closeMaintenanceModal();
+          render();
+        });
+      }
+
+      // Maintenance Filters & Controls Listeners
+      if (maintenanceSearchInput) {
+        maintenanceSearchInput.addEventListener('input', (e) => {
+          state.maintenanceSearchQuery = e.target.value;
+          renderMaintenanceView();
+        });
+      }
+
+      if (maintMachineFilterSelect) {
+        maintMachineFilterSelect.addEventListener('change', (e) => {
+          state.maintenanceSelectedMachine = e.target.value;
+          renderMaintenanceView();
+        });
+      }
+
+      if (maintStatusFilterSelect) {
+        maintStatusFilterSelect.addEventListener('change', (e) => {
+          state.maintenanceSelectedStatus = e.target.value;
+          renderMaintenanceView();
+        });
+      }
+
+      const closeMaintModalBtn = document.getElementById('closeMaintModalBtn');
+      if (closeMaintModalBtn) closeMaintModalBtn.addEventListener('click', closeMaintenanceModal);
+
+      const cancelMaintBtn = document.getElementById('cancelMaintBtn');
+      if (cancelMaintBtn) cancelMaintBtn.addEventListener('click', closeMaintenanceModal);
+
+      const exportMaintCsvBtn = document.getElementById('exportMaintCsvBtn');
+      if (exportMaintCsvBtn) exportMaintCsvBtn.addEventListener('click', exportMaintenanceCSV);
+
+      const openAddTabBtn = document.getElementById('openAddTabBtn');
+      if (openAddTabBtn) {
+        openAddTabBtn.addEventListener('click', openTabManagementModal);
+      }
       document.getElementById('closeTabModalBtn').addEventListener('click', () => customTabModal.classList.add('hidden'));
 
       document.getElementById('shareBtn').addEventListener('click', () => shareModal.classList.remove('hidden'));
@@ -1295,10 +2185,15 @@
       document.getElementById('resetDemoBtn').addEventListener('click', () => {
         openConfirmModal(
           "Reset to Demo Data?",
-          "This will overwrite cloud inventory with default Anderson Farm sample items.",
+          "This will overwrite cloud inventory with default Anderson Farm sample items and maintenance records.",
           () => {
-            pushDataToCloud([...DEFAULT_FARM_DATA], [...DEFAULT_CATEGORIES]);
+            state.items = [...DEFAULT_FARM_DATA];
+            state.categories = [...DEFAULT_CATEGORIES];
+            state.maintenanceLogs = [...DEFAULT_MAINTENANCE_DATA];
+            pushDataToCloud([...DEFAULT_FARM_DATA], [...DEFAULT_CATEGORIES], [...DEFAULT_MAINTENANCE_DATA]);
             shareModal.classList.add('hidden');
+            renderTabs();
+            render();
             showToast('Reset cloud data to demo records');
           }
         );
