@@ -33,6 +33,7 @@
       --border-color: #E6E1DA;
       --danger-color: #A93226;
       --warning-color: #D35400;
+      --info-color: #2980B9;
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       --radius: 12px;
     }
@@ -95,6 +96,13 @@
       margin-top: 3px;
     }
 
+    .header-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
     .sync-status {
       font-size: 0.72rem;
       background: rgba(255,255,255,0.15);
@@ -105,6 +113,7 @@
       align-items: center;
       gap: 6px;
       white-space: nowrap;
+      color: #FFF;
     }
 
     .status-dot {
@@ -114,13 +123,33 @@
       background: #2ECC71;
     }
 
+    .btn-guide {
+      background: rgba(212, 175, 55, 0.25);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Summary Dashboard Cards */
     .stats-bar {
       max-width: 1000px;
       margin: 16px auto 0;
       padding: 0 16px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .stat-card {
@@ -475,9 +504,10 @@
     }
 
     .backup-actions {
-      margin-top: 16px;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
+      margin-top: 10px;
     }
 
     .btn-secondary {
@@ -489,7 +519,28 @@
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      flex: 1;
+      text-align: center;
+    }
+
+    /* Guide Content Styling */
+    .guide-step {
+      margin-bottom: 16px;
+      background: var(--bg-cream);
+      padding: 14px;
+      border-radius: 8px;
+      border-left: 4px solid var(--secondary-color);
+    }
+
+    .guide-step h4 {
+      font-size: 0.95rem;
+      color: var(--primary-color);
+      margin-bottom: 6px;
+    }
+
+    .guide-step p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -513,14 +564,17 @@
           <p>Inventory Manager • Ohio, IL</p>
         </div>
       </div>
-      <div class="sync-status" id="sync-status-indicator">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">Connecting...</span>
+      <div class="header-actions">
+        <div class="sync-status" id="sync-status-indicator">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">Connecting...</span>
+        </div>
+        <button class="btn-guide" onclick="openGuideModal()">? App Guide</button>
       </div>
     </div>
   </header>
 
-  <!-- Top Metrics Bar -->
+  <!-- Summary Dashboard Cards -->
   <div class="stats-bar">
     <div class="stat-card">
       <div class="value" id="stat-total-items">0</div>
@@ -534,13 +588,17 @@
       <div class="value" id="stat-total-val">$0</div>
       <div class="label">Est. Value</div>
     </div>
+    <div class="stat-card">
+      <div class="value" id="stat-active-tabs">0</div>
+      <div class="label">Categories</div>
+    </div>
   </div>
 
   <!-- Dynamic Tabs -->
   <div class="tabs-wrapper">
     <div class="tabs-header">
       <h3>Categories & Equipment</h3>
-      <button class="manage-tabs-btn" onclick="openTabManager()">+ Manage Tabs / Backup</button>
+      <button class="manage-tabs-btn" onclick="openTabManager()">+ Manage Tabs & Backups</button>
     </div>
     <div class="tabs-scroll" id="tabs-container">
       <!-- Generated Dynamically -->
@@ -549,7 +607,7 @@
 
   <!-- Search & Main Grid -->
   <main>
-    <input type="text" class="search-box" id="search-input" placeholder="Search by item, hybrid, tractor, supplier..." oninput="renderApp()">
+    <input type="text" class="search-box" id="search-input" placeholder="Search by item, hybrid, tractor, supplier, location..." oninput="renderApp()">
     
     <div class="inventory-grid" id="inventory-grid">
       <!-- Items generated dynamically -->
@@ -634,29 +692,66 @@
   <div class="modal-backdrop" id="tab-modal">
     <div class="modal-card">
       <div class="modal-header">
-        <h2>Manage Tabs & Data</h2>
+        <h2>Manage Tabs & Data Hub</h2>
         <button class="btn-link" onclick="closeTabModal()">Done</button>
       </div>
 
       <div class="form-group">
-        <label>Add New Tab / Equipment</label>
+        <label>Add New Category / Equipment Tab</label>
         <div style="display:flex; gap:8px;">
           <input type="text" id="new-tab-name" placeholder="e.g. John Deere 8320 or Field 14">
           <button type="button" class="btn-submit" style="margin:0; width:auto; padding:0 16px;" onclick="addCustomTab()">Add</button>
         </div>
       </div>
 
-      <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Current Tabs</label>
+      <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Current Categories</label>
       <div class="tab-list-manage" id="manage-tab-list">
         <!-- Tab items loaded dynamically -->
       </div>
 
       <hr style="border:none; border-top:1px solid var(--border-color); margin:20px 0;">
 
-      <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Manual Backups</label>
+      <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Backups & Data Restore</label>
       <div class="backup-actions">
-        <button class="btn-secondary" onclick="exportToCSV()">Export CSV</button>
-        <button class="btn-secondary" onclick="exportToJSON()">Export JSON</button>
+        <button class="btn-secondary" onclick="exportToCSV()">Export to CSV</button>
+        <button class="btn-secondary" onclick="exportToJSON()">Export to JSON</button>
+        <button class="btn-secondary" style="grid-column: span 2;" onclick="triggerJSONImport()">Import / Restore from Backup File</button>
+        <input type="file" id="import-json-file" accept=".json" style="display:none;" onchange="importFromJSON(event)">
+      </div>
+    </div>
+  </div>
+
+  <!-- App Guide Modal -->
+  <div class="modal-backdrop" id="guide-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Anderson Farm App Guide</h2>
+        <button class="btn-link" onclick="closeGuideModal()">Close</button>
+      </div>
+
+      <div class="guide-step">
+        <h4>1. Real-Time Multi-Device Sync</h4>
+        <p>All family members sharing this web app automatically view and edit the exact same live inventory node. Edits made on one phone update everyone's screen in real time.</p>
+      </div>
+
+      <div class="guide-step">
+        <h4>2. Adding to Mobile Home Screen (PWA)</h4>
+        <p>Open this page in Safari (iOS) or Chrome (Android) and tap <b>"Add to Home Screen"</b>. The app will launch as a full-screen application without standard web browser bars.</p>
+      </div>
+
+      <div class="guide-step">
+        <h4>3. Safe Environment Routing</h4>
+        <p>When running on the official GitHub Pages link, the pill in the header displays <b>🟢 Live Cloud Sync</b>. When testing on your computer or dev branch, it automatically routes to <b>🟢 Test Mode</b> to keep active records safe.</p>
+      </div>
+
+      <div class="guide-step">
+        <h4>4. Managing Custom Equipment & Categories</h4>
+        <p>Tap <b>"+ Manage Tabs & Backups"</b> to create custom tabs for individual tractors, implements, or farm fields.</p>
+      </div>
+
+      <div class="guide-step">
+        <h4>5. Offline Caching & Backups</h4>
+        <p>If signal is lost while working in remote sheds, edits are held safely in local memory and automatically pushed to the cloud once internet re-connects. Use the JSON/CSV tools to save physical copies.</p>
       </div>
     </div>
   </div>
@@ -677,21 +772,20 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2. Automatic Environment Detection Logic
-    // Checks if running on live production site or dev/local test space
+    // 2. Environment Auto-Detection Logic
     const isProduction = window.location.hostname === 'tanderson227.github.io' && 
                          window.location.pathname.includes('anderson-farm-invetory-app');
     
-    // Automatically routes to 'farm_inventory' on production, or 'test_inventory' everywhere else
+    // Automatically routes to 'farm_inventory' on production, or 'test_inventory' on dev/local
     const DB_PATH = isProduction ? 'farm_inventory' : 'test_inventory';
 
-    // Application State
+    // State Variables
     const defaultTabs = ['All', 'Seeds & Crops', 'Feed & Grain', 'Chemicals & Fertilizer', 'Machinery & Parts'];
     let tabs = defaultTabs;
     let items = [];
     let activeTab = 'All';
 
-    // 3. Monitor Real-Time Connection & Node Status
+    // 3. Connection Status Listener
     db.ref('.info/connected').on('value', (snap) => {
       const statusText = document.getElementById('status-text');
       const statusDot = document.getElementById('status-dot');
@@ -705,7 +799,7 @@
       }
     });
 
-    // 4. Live Cloud Listener (Subscribes dynamically to DB_PATH)
+    // 4. Real-Time Cloud Listener
     db.ref(DB_PATH).on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -713,7 +807,8 @@
         tabs = data.tabs || defaultTabs;
       } else {
         items = [
-          { id: '1', name: 'Pioneer P1197AM Corn Seed', tab: 'Seeds & Crops', qty: 45, unit: 'Bags', min: 10, cost: 285, spec: 'P1197AM', client: 'Nutrien Ag', location: 'Seed Shed North', notes: '2026 Planting Window' }
+          { id: '1', name: 'Pioneer P1197AM Corn Seed', tab: 'Seeds & Crops', qty: 45, unit: 'Bags', min: 10, cost: 285, spec: 'P1197AM', client: 'Nutrien Ag', location: 'Seed Shed North', notes: '2026 Planting Window' },
+          { id: '2', name: 'John Deere Oil Filter', tab: 'Machinery & Parts', qty: 3, unit: 'Units', min: 5, cost: 24, spec: 'RE504836', client: 'JD Dealer', location: 'Shop Shelf B2', notes: 'Fits 8320 Tractor' }
         ];
         tabs = defaultTabs;
         pushCloudData();
@@ -721,7 +816,7 @@
       renderApp();
     });
 
-    // 5. Push Updates to Cloud
+    // 5. Cloud Data Dispatcher
     function pushCloudData() {
       db.ref(DB_PATH).set({
         items: items,
@@ -729,7 +824,7 @@
       });
     }
 
-    // Render App
+    // Render Master UI
     function renderApp() {
       renderTabs();
       renderItems();
@@ -758,6 +853,8 @@
 
       const totalVal = items.reduce((sum, i) => sum + (Number(i.qty || 0) * Number(i.cost || 0)), 0);
       document.getElementById('stat-total-val').innerText = '$' + Math.round(totalVal).toLocaleString();
+
+      document.getElementById('stat-active-tabs').innerText = tabs.length - 1; // Exclude 'All'
     }
 
     function renderItems() {
@@ -816,7 +913,6 @@
       }).join('');
     }
 
-    // Quick Quantity Control
     function updateQty(id, change) {
       items = items.map(item => {
         if (item.id === id) {
@@ -828,7 +924,7 @@
       pushCloudData();
     }
 
-    // Item Modal Management
+    // Modal Control & Operations
     function openItemModal(editId = null) {
       const select = document.getElementById('item-tab');
       select.innerHTML = tabs.filter(t => t !== 'All').map(t => `<option value="${t}">${t}</option>`).join('');
@@ -899,7 +995,7 @@
       }
     }
 
-    // Dynamic Tab & Backup Management
+    // Custom Tabs & Category Manager
     function openTabManager() {
       renderManageTabList();
       document.getElementById('tab-modal').style.display = 'flex';
@@ -931,7 +1027,7 @@
     }
 
     function removeCustomTab(name) {
-      if (confirm(`Remove tab "${name}"? Items assigned to it will remain visible under 'All'.`)) {
+      if (confirm(`Remove category "${name}"? Items assigned to it will remain accessible under 'All'.`)) {
         tabs = tabs.filter(t => t !== name);
         if (activeTab === name) activeTab = 'All';
         pushCloudData();
@@ -939,7 +1035,16 @@
       }
     }
 
-    // Backups
+    // App Guide Modal Handlers
+    function openGuideModal() {
+      document.getElementById('guide-modal').style.display = 'flex';
+    }
+
+    function closeGuideModal() {
+      document.getElementById('guide-modal').style.display = 'none';
+    }
+
+    // Export & Import Hub
     function exportToCSV() {
       const headers = ['ID', 'Name', 'Category', 'Quantity', 'Unit', 'Min Stock', 'Unit Cost', 'Hybrid/Part Number', 'Supplier', 'Location', 'Notes'];
       const rows = items.map(i => [
@@ -964,6 +1069,38 @@
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
+    }
+
+    function triggerJSONImport() {
+      document.getElementById('import-json-file').click();
+    }
+
+    function importFromJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (importedData.items && Array.isArray(importedData.items)) {
+            if (confirm('Importing this file will overwrite existing inventory with the backup file data. Continue?')) {
+              items = importedData.items;
+              if (importedData.tabs && Array.isArray(importedData.tabs)) {
+                tabs = importedData.tabs;
+              }
+              pushCloudData();
+              alert('Inventory data successfully restored!');
+              closeTabModal();
+            }
+          } else {
+            alert('Invalid backup file format.');
+          }
+        } catch (err) {
+          alert('Error parsing JSON backup file.');
+        }
+      };
+      reader.readAsText(file);
     }
   </script>
 </body>
