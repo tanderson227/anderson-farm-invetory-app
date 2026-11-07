@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anderson Family Farms - Inventory Manager</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter (UI) & Playfair Display (Rustic Serif Headers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    // Custom Tailwind color palette for Anderson Family Farms
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clay: {
+              50: '#fdf8f6',
+              100: '#f9eee9',
+              600: '#b84a39',
+              700: '#9b392b', // Main Terracotta Red from logo
+              800: '#802f23',
+              900: '#64251c',
+            },
+            farmgreen: {
+              50: '#f2f8f3',
+              600: '#2e6f3b',
+              700: '#1e4827', // Main Farm Green
+              800: '#16361d',
+              900: '#0d2212',
+            },
+            harvestgold: {
+              500: '#d4af37',
+              600: '#b89428',
+              700: '#94741c',
+            },
+            cream: {
+              100: '#fcfaf7',
+              200: '#f4efe6',
+              300: '#e8dfd1'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fbf9f5;
+      color: #2c2926;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97) translateY(6px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-16 md:pb-8">
+
+  <!-- ================= HEADER SECTION ================= -->
+  <header class="bg-clay-800 text-white shadow-lg border-b-4 border-harvestgold-500 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+      
+      <!-- Logo & Farm Title Block -->
+      <div class="flex items-center space-x-3.5">
+        
+        <!-- Detailed Vector SVG Seal Logo Matching Logo Image -->
+        <div class="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-cream-100 rounded-full p-1 shadow-inner border-2 border-harvestgold-500 flex items-center justify-center">
+          <svg viewBox="0 0 200 200" class="w-full h-full">
+            <!-- Scalloped Outer Red Ring -->
+            <circle cx="100" cy="100" r="96" fill="#802f23" stroke="#d4af37" stroke-width="3.5"/>
+            <circle cx="100" cy="100" r="88" fill="none" stroke="#f4efe6" stroke-width="1.5" stroke-dasharray="3,2"/>
+            <circle cx="100" cy="100" r="82" fill="#1e4827"/>
+            
+            <!-- Sunburst Rays -->
+            <path d="M100 75 L82 35 L100 95 L118 35 Z" fill="#d4af37" opacity="0.35"/>
+            <path d="M100 75 L62 45 L100 95 L138 45 Z" fill="#d4af37" opacity="0.25"/>
+            <path d="M100 75 L42 62 L100 95 L158 62 Z" fill="#d4af37" opacity="0.25"/>
+            
+            <!-- Sun & Red Barn Silhouette -->
+            <circle cx="100" cy="68" r="13" fill="#d4af37"/>
+            <path d="M86 82 L100 68 L114 82 L114 96 L86 96 Z" fill="#802f23"/>
+            <path d="M94 96 L94 87 L106 87 L106 96 Z" fill="#f4efe6"/>
+            
+            <!-- Rolling Green Fields & Corn/Soybean Stalks -->
+            <path d="M18 110 Q 60 90, 100 105 T 182 110 L182 182 A 82 82 0 0 1 18 182 Z" fill="#2e6f3b"/>
+            <path d="M18 125 Q 70 110, 110 125 T 182 130 L182 182 A 82 82 0 0 1 18 182 Z" fill="#1e4827"/>
+            
+            <!-- Green Tractor (Left) -->
+            <rect x="58" y="108" width="26" height="16" rx="2" fill="#2e6f3b"/>
+            <rect x="72" y="100" width="14" height="14" rx="2" fill="#2e6f3b"/>
+            <circle cx="65" cy="126" r="8" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
+            <circle cx="84" cy="124" r="11" fill="#222" stroke="#d4af37" stroke-width="2"/>
+            <circle cx="84" cy="124" r="4" fill="#d4af37"/>
+            <circle cx="65" cy="126" r="3" fill="#d4af37"/>
+
+            <!-- Red Combine (Right) -->
+            <rect x="115" y="106" width="28" height="18" rx="2" fill="#9b392b"/>
+            <rect x="110" y="112" width="12" height="12" rx="1" fill="#802f23"/>
+            <circle cx="122" cy="125" r="11" fill="#222" stroke="#d4af37" stroke-width="2"/>
+            <circle cx="138" cy="127" r="7" fill="#222" stroke="#d4af37" stroke-width="1.5"/>
+            <circle cx="122" cy="125" r="4" fill="#d4af37"/>
+            
+            <!-- Central Ribbon Banner: OHIO, ILLINOIS -->
+            <path d="M 48 147 Q 100 156 152 147 L 148 160 Q 100 169 52 160 Z" fill="#f4efe6" stroke="#802f23" stroke-width="1"/>
+            <path id="ribbonArch" d="M 50,153 Q 100,163 150,153" fill="none"/>
+            <text font-family="sans-serif" font-weight="bold" font-size="8.5" fill="#802f23" text-anchor="middle" letter-spacing="0.5">
+              <textPath href="#ribbonArch" startOffset="50%">OHIO, ILLINOIS</textPath>
+            </text>
+            
+            <!-- Four Generations Text Arc -->
+            <path id="subBannerArch" d="M 45,170 Q 100,182 155,170" fill="none"/>
+            <text font-family="sans-serif" font-weight="bold" font-size="7" fill="#d4af37" text-anchor="middle" letter-spacing="1">
+              <textPath href="#subBannerArch" startOffset="50%">• FOUR GENERATIONS •</textPath>
+            </text>
+
+            <!-- Outer Text Arches -->
+            <path id="textArchTop" d="M 30,100 A 70,70 0 0,1 170,100" fill="none"/>
+            <text font-family="'Playfair Display', serif" font-weight="bold" font-size="16" fill="#f4efe6" text-anchor="middle">
+              <textPath href="#textArchTop" startOffset="50%">ANDERSON</textPath>
+            </text>
+
+            <path id="textArchBottom" d="M 25,110 A 72,72 0 0,0 175,110" fill="none"/>
+            <text font-family="sans-serif" font-weight="bold" font-size="10" fill="#d4af37" text-anchor="middle" letter-spacing="1">
+              <textPath href="#textArchBottom" startOffset="50%">FAMILY FARMS</textPath>
+            </text>
+          </svg>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-serif font-bold text-xl sm:text-2xl tracking-wide text-cream-100">Anderson Family Farms</h1>
+          </div>
+          <p class="text-xs text-harvestgold-500 font-medium flex items-center gap-2 tracking-wider uppercase">
+            <span>Est. 1954</span>
+            <span class="text-clay-600">&bull;</span>
+            <span>Ohio, Illinois</span>
+            <span class="text-clay-600">&bull;</span>
+            <span class="hidden sm:inline">Four Generations</span>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons Header -->
+      <div class="flex items-center space-x-2 sm:space-x-2.5 w-full sm:w-auto justify-end">
+        
+        <!-- Learn & Code Guide Modal Trigger -->
+        <button id="learnBtn" class="bg-clay-700 hover:bg-clay-600 text-cream-100 text-xs font-semibold px-3 py-2 rounded-lg transition-colors border border-clay-600 flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-graduation-cap text-harvestgold-500"></i>
+          <span>Guide & Data</span>
+        </button>
+
+        <!-- Sync & Export Backup Trigger -->
+        <button id="shareBtn" class="bg-clay-700 hover:bg-clay-600 text-cream-100 text-xs font-semibold px-3 py-2 rounded-lg transition-colors border border-clay-600 flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-cloud-arrow-down text-harvestgold-500"></i>
+          <span>Backup / Export</span>
+        </button>
+
+        <!-- Primary Add Item Button -->
+        <button id="openAddModalBtn" class="bg-farmgreen-700 hover:bg-farmgreen-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2 rounded-lg shadow-md transition-transform active:scale-95 border border-farmgreen-600 flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Item</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+    <!-- ================= METRICS & STATS DASHBOARD ================= -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      
+      <!-- Total Items -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-lg bg-farmgreen-50 text-farmgreen-700 flex items-center justify-center text-lg flex-shrink-0">
+          <i class="fa-solid fa-boxes-stacked"></i>
+        </div>
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Items</p>
+          <h3 id="statTotalItems" class="text-2xl font-bold text-slate-800">0</h3>
+        </div>
+      </div>
+
+      <!-- Low Stock Warnings -->
+      <div id="statLowStockCard" class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3 transition-colors">
+        <div id="statLowStockIcon" class="w-11 h-11 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-lg flex-shrink-0">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Low Stock</p>
+          <h3 id="statLowStock" class="text-2xl font-bold text-amber-700">0</h3>
+        </div>
+      </div>
+
+      <!-- Total Valuation ($) -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg flex-shrink-0">
+          <i class="fa-solid fa-sack-dollar"></i>
+        </div>
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Est. Total Value</p>
+          <h3 id="statTotalValue" class="text-xl sm:text-2xl font-bold text-slate-800">$0.00</h3>
+        </div>
+      </div>
+
+      <!-- Active Locations / Machinery -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-cream-300 flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-lg bg-clay-50 text-clay-700 flex items-center justify-center text-lg flex-shrink-0">
+          <i class="fa-solid fa-tractor"></i>
+        </div>
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Locations / Equipment</p>
+          <h3 id="statLocations" class="text-2xl font-bold text-slate-800">0</h3>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= DYNAMIC TABS BAR & CATEGORY MANAGEMENT ================= -->
+    <section class="mb-6 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+          <i class="fa-solid fa-folder-tree text-clay-700"></i>
+          <span>Inventory Categories & Tabs</span>
+        </h2>
+
+        <!-- Custom Tab Manager Trigger -->
+        <button id="openAddTabBtn" class="text-xs font-semibold text-clay-700 hover:text-clay-800 hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span>Add Custom Tab</span>
+        </button>
+      </div>
+
+      <!-- Scrollable Tab Buttons Bar -->
+      <div class="bg-white p-2 rounded-xl border border-cream-300 shadow-sm flex items-center justify-between gap-2">
+        <div id="dynamicTabList" class="flex gap-2 overflow-x-auto no-scrollbar py-1 px-1 flex-grow">
+          <!-- Dynamic Tabs Injected Here via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= SEARCH & CONTROLS TOOLBAR ================= -->
+    <section class="bg-white rounded-xl shadow-sm border border-cream-300 p-4 mb-6 space-y-3">
+      <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+        
+        <!-- Search Field -->
+        <div class="relative w-full md:w-96">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input type="text" id="searchInput" placeholder="Search seed variety, part #, client, tractor..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-cream-100/60 border border-cream-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-clay-700 focus:bg-white transition-all">
+        </div>
+
+        <!-- Low Stock Filter & Sorting Select -->
+        <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
+          
+          <button id="lowStockToggle" class="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-cream-300 text-xs sm:text-sm font-medium text-slate-700 hover:bg-cream-100 transition-all select-none">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-300 transition-colors" id="lowStockIndicator"></span>
+            <span>Low Stock Only</span>
+          </button>
+
+          <div class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-600 font-medium">
+            <i class="fa-solid fa-arrow-down-wide-short text-slate-400"></i>
+            <select id="sortSelect" class="bg-cream-100/60 border border-cream-300 rounded-lg px-2.5 py-2 text-slate-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-clay-700">
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+              <option value="qty-asc">Quantity (Lowest First)</option>
+              <option value="qty-desc">Quantity (Highest First)</option>
+              <option value="val-desc">Highest Value ($)</option>
+              <option value="location">Location / Machine</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ================= INVENTORY GRID DISPLAY ================= -->
+    <section id="inventoryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Cards dynamically generated here -->
+    </section>
+
+    <!-- Empty State Message -->
+    <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-cream-300 shadow-sm">
+      <div class="w-16 h-16 bg-cream-100 text-clay-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+        <i class="fa-solid fa-wheat-awn-circle-exclamation"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-800 font-serif">No inventory items found</h3>
+      <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">No matching items for this tab or filter criteria. Add a new item or clear your search.</p>
+      <button id="resetFiltersBtn" class="mt-4 px-4 py-2 bg-clay-100 text-clay-800 rounded-lg text-xs font-bold hover:bg-clay-200 transition-colors">
+        Clear Filters
+      </button>
+    </div>
+
+  </main>
+
+
+  <!-- ================= MODAL 1: ADD / EDIT ITEM ================= -->
+  <div id="itemModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in max-h-[92vh] flex flex-col">
+      
+      <!-- Modal Header -->
+      <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-boxes-packing text-harvestgold-500 text-lg"></i>
+          <h2 id="modalTitle" class="font-serif font-bold text-lg">Add Inventory Item</h2>
+        </div>
+        <button id="closeModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <form id="itemForm" class="p-6 overflow-y-auto space-y-4 flex-grow text-xs sm:text-sm">
+        <input type="hidden" id="itemId">
+
+        <!-- Item Name -->
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Item Name *</label>
+          <input type="text" id="itemName" required placeholder="e.g. Pioneer P1197AM Corn, Oil Filter, Round Bales"
+            class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+        </div>
+
+        <!-- Category Tab & Hybrid/Part Number -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Category / Tab *</label>
+            <select id="itemCategory" required class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+              <!-- Dynamically populated categories -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Seed Hybrid / Part # / Spec</label>
+            <input type="text" id="itemVariety" placeholder="e.g. DKC 64-64, RE504836, 16-20-0"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Supplier/Client & Storage/Machinery Location -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Supplier / Client Name</label>
+            <input type="text" id="itemSupplier" placeholder="e.g. Pioneer, Bayer, Smith Farm Lease"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Location / Assigned Machine</label>
+            <input type="text" id="itemLocation" placeholder="e.g. JD 8320 Tractor, Silo 2, Shed B" list="locationList"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+            <datalist id="locationList">
+              <option value="John Deere 8320"></option>
+              <option value="Case IH Combine"></option>
+              <option value="Main Barn"></option>
+              <option value="Silo 1"></option>
+              <option value="Chemical Locker"></option>
+              <option value="Machine Shed"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <!-- Quantity, Unit, & Min Alert -->
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Quantity *</label>
+            <input type="number" id="itemQuantity" min="0" step="any" required placeholder="0"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Unit *</label>
+            <input type="text" id="itemUnit" required placeholder="bags, bu, gal, bales, pcs" list="unitList"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+            <datalist id="unitList">
+              <option value="bags"></option>
+              <option value="bushels"></option>
+              <option value="bales"></option>
+              <option value="gallons"></option>
+              <option value="quarts"></option>
+              <option value="lbs"></option>
+              <option value="tons"></option>
+              <option value="parts"></option>
+            </datalist>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Min Alert Level *</label>
+            <input type="number" id="itemMinStock" min="0" step="any" required placeholder="5"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Cost Per Unit & Expiration/Planting Window -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Cost Per Unit ($)</label>
+            <input type="number" id="itemCost" min="0" step="any" placeholder="0.00"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Expiration / Planting Window</label>
+            <input type="text" id="itemExpiry" placeholder="e.g. Spring 2027, Exp 11/2026"
+              class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1 text-[11px]">Notes / Field Specs</label>
+          <textarea id="itemNotes" rows="2" placeholder="e.g. Chemical application rate, lot number, maintenance interval..."
+            class="w-full px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none"></textarea>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="pt-3 flex items-center justify-end space-x-3 border-t border-cream-300">
+          <button type="button" id="cancelFormBtn" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-semibold">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-farmgreen-700 hover:bg-farmgreen-600 text-white font-bold rounded-lg shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save Record</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ================= MODAL 2: ADD / MANAGE CUSTOM TABS ================= -->
+  <div id="customTabModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in">
+      
+      <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-folder-plus text-harvestgold-500 text-lg"></i>
+          <h2 class="font-serif font-bold text-lg">Manage Farm Tabs</h2>
+        </div>
+        <button id="closeTabModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-5 text-xs sm:text-sm">
+        
+        <!-- Add New Tab Form -->
+        <form id="newTabForm" class="space-y-2">
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px]">Create New Category / Machine Tab</label>
+          <div class="flex gap-2">
+            <input type="text" id="newTabNameInput" required placeholder="e.g. John Deere 8320, Field 14..."
+              class="flex-grow px-3.5 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-clay-700 focus:outline-none">
+            <button type="submit" class="bg-clay-700 hover:bg-clay-800 text-white font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+              + Add Tab
+            </button>
+          </div>
+        </form>
+
+        <!-- Current Custom Tabs List -->
+        <div class="border-t border-cream-300 pt-3 space-y-2">
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px]">Existing Tabs</label>
+          <div id="tabManagementList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+            <!-- Dynamic tab list with delete buttons generated via JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= MODAL 3: EXPORT / IMPORT / SYNC BACKUP ================= -->
+  <div id="shareModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in">
+      
+      <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-arrows-rotate text-harvestgold-500 text-lg"></i>
+          <h2 class="font-serif font-bold text-lg">Family Data Backup & Sync</h2>
+        </div>
+        <button id="closeShareModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs sm:text-sm">
+        <p class="text-slate-600 leading-relaxed">
+          Export your inventory to share files with family members or keep a offline backup copy on your desktop.
+        </p>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button id="exportJsonBtn" class="px-3 py-3 bg-cream-200 hover:bg-cream-300 text-clay-900 rounded-xl font-bold flex flex-col items-center justify-center gap-1 border border-cream-300 transition-colors">
+            <i class="fa-solid fa-file-code text-clay-700 text-lg"></i>
+            <span>Export JSON File</span>
+          </button>
+          <button id="exportCsvBtn" class="px-3 py-3 bg-cream-200 hover:bg-cream-300 text-clay-900 rounded-xl font-bold flex flex-col items-center justify-center gap-1 border border-cream-300 transition-colors">
+            <i class="fa-solid fa-file-csv text-farmgreen-700 text-lg"></i>
+            <span>Export Excel (CSV)</span>
+          </button>
+        </div>
+
+        <div class="border-t border-cream-300 pt-3 space-y-2">
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px]">Import Backup File</label>
+          <input type="file" id="importFileInput" accept=".json" class="hidden">
+          <button id="triggerImportBtn" class="w-full py-2.5 bg-farmgreen-50 hover:bg-farmgreen-100 text-farmgreen-800 border border-farmgreen-300 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
+            <i class="fa-solid fa-file-import"></i>
+            <span>Load Family Backup (.json)</span>
+          </button>
+        </div>
+
+        <div class="pt-2">
+          <button id="resetDemoBtn" class="w-full py-2 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-colors font-semibold">
+            Reset Demo Anderson Farm Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= MODAL 4: LEARNING & DATA PRESERVATION GUIDE ================= -->
+  <div id="learnModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full shadow-2xl overflow-hidden border border-cream-300 animate-fade-in max-h-[90vh] flex flex-col">
+      
+      <div class="bg-clay-800 text-white px-6 py-4 flex items-center justify-between border-b-2 border-harvestgold-500">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-graduation-cap text-harvestgold-500 text-xl"></i>
+          <h2 class="font-serif font-bold text-lg">Data Safety & Web Dev Guide</h2>
+        </div>
+        <button id="closeLearnModalBtn" class="text-slate-300 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Tabs Header -->
+      <div class="flex border-b border-cream-300 bg-cream-100 overflow-x-auto no-scrollbar px-6 pt-2">
+        <button class="learn-tab active-tab text-xs sm:text-sm font-bold px-4 py-2.5 border-b-2 border-clay-700 text-clay-800" data-tab="tab-persistence">1. Safe Code Updates</button>
+        <button class="learn-tab text-xs sm:text-sm font-medium px-4 py-2.5 text-slate-500 border-b-2 border-transparent hover:text-slate-800" data-tab="tab-code">2. How Code Works</button>
+        <button class="learn-tab text-xs sm:text-sm font-medium px-4 py-2.5 text-slate-500 border-b-2 border-transparent hover:text-slate-800" data-tab="tab-pwa">3. Install on Phone</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed flex-grow">
+        
+        <!-- Tab 1: Will updates delete data? -->
+        <div id="tab-persistence" class="tab-content space-y-3">
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <h3 class="font-bold text-emerald-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+              Will I lose my data when I update the code on GitHub?
+            </h3>
+            <p class="mt-1 text-emerald-800 font-medium">
+              <b>No! You will NOT lose your data.</b> Here is why:
+            </p>
+          </div>
+
+          <div class="space-y-2 text-slate-600">
+            <p>
+              This app stores your inventory items directly inside your web browser's <b><code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-clay-700">localStorage</code></b>.
+            </p>
+            <ul class="list-disc pl-5 space-y-1.5">
+              <li><b>Code vs. Storage:</b> GitHub Pages hosts the application files (<code class="font-mono">index.html</code>). Your inventory data lives safely inside your family phone or laptop browsers under your site's domain.</li>
+              <li><b>When you edit & re-upload:</b> When you add new features or modify colors in <code class="font-mono">index.html</code> and push it to GitHub, the browser downloads the new visual app layout, but <b>reads the existing saved inventory items from `localStorage` unharmed!</b></li>
+              <li><b>Best Practice Safety Net:</b> Before pushing major new updates, click <b>"Backup / Export"</b> to download a <code class="font-mono">.json</code> backup file as an extra precaution.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tab 2: Web Dev Basics -->
+        <div id="tab-code" class="tab-content hidden space-y-3">
+          <h3 class="font-bold text-slate-900 text-base">How This Single-File App Operates</h3>
+          <p>This entire app combines three core web technologies inside one file:</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3 bg-cream-100 rounded-xl border border-cream-300">
+              <h4 class="font-bold text-clay-800 flex items-center gap-1 mb-1"><i class="fa-brands fa-html5"></i> HTML</h4>
+              <p class="text-xs text-slate-600">Structure & elements: Headers, modals, dynamic tab buttons, and inventory card templates.</p>
+            </div>
+            <div class="p-3 bg-cream-100 rounded-xl border border-cream-300">
+              <h4 class="font-bold text-farmgreen-700 flex items-center gap-1 mb-1"><i class="fa-brands fa-css3-alt"></i> Tailwind CSS</h4>
+              <p class="text-xs text-slate-600">Styles & colors: Custom terracotta red, farm green, responsive grid layouts, and font styling.</p>
+            </div>
+            <div class="p-3 bg-cream-100 rounded-xl border border-cream-300">
+              <h4 class="font-bold text-amber-700 flex items-center gap-1 mb-1"><i class="fa-brands fa-js"></i> JavaScript</h4>
+              <p class="text-xs text-slate-600">Brain & logic: Calculates total valuation $, filters low stock, adds custom tabs, & saves to `localStorage`.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Mobile PWA -->
+        <div id="tab-pwa" class="tab-content hidden space-y-3">
+          <h3 class="font-bold text-slate-900 text-base">Adding to Family Phones as an App</h3>
+          <div class="space-y-2">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <h4 class="font-bold text-slate-900"><i class="fa-brands fa-apple mr-1"></i> iPhone / iPad (Safari)</h4>
+              <p class="text-xs text-slate-600 mt-0.5">Open your GitHub Pages URL in Safari &rarr; Tap <b>Share Icon</b> (box with arrow) &rarr; Tap <b>"Add to Home Screen"</b>.</p>
+            </div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <h4 class="font-bold text-slate-900"><i class="fa-brands fa-android text-farmgreen-700 mr-1"></i> Android (Chrome)</h4>
+              <p class="text-xs text-slate-600 mt-0.5">Open your URL in Chrome &rarr; Tap the <b>3 dots menu</b> in top right &rarr; Tap <b>"Install App"</b>.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= MODAL 5: DELETE CONFIRMATION ================= -->
+  <div id="deleteModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-6 text-center animate-fade-in space-y-4">
+      <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-slate-900 text-lg font-serif">Remove Item?</h3>
+        <p id="deleteItemName" class="text-xs text-slate-500 mt-1"></p>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button id="cancelDeleteBtn" class="w-1/2 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50">Cancel</button>
+        <button id="confirmDeleteBtn" class="w-1/2 py-2 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-sm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= TOAST NOTIFICATION CONTAINER ================= -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+
+  <!-- ================= APPLICATION JAVASCRIPT CODE ================= -->
+  <script>
+    /**
+     * ANDERSON FAMILY FARMS INVENTORY MANAGER
+     * Customized single-file Web App with dynamic category tabs, farm-specific tracking,
+     * total inventory valuation ($), local storage persistence, and JSON/CSV backup tools.
+     */
+
+    // Initial Default Seed & Machinery Data for Anderson Family Farms
+    const DEFAULT_FARM_DATA = [
+      {
+        id: '1',
+        name: 'Pioneer P1197AM Corn Seed',
+        category: 'Seeds & Crops',
+        variety: 'P1197AM (111 CRM)',
+        supplier: 'Pioneer Hi-Bred',
+        location: 'Seed Storage Shed',
+        quantity: 45,
+        unit: 'bags',
+        minStock: 15,
+        cost: 285.00,
+        expiry: 'Spring 2027',
+        notes: 'High yield potential for field #4 & #8.'
+      },
+      {
+        id: '2',
+        name: 'John Deere Oil Filter RE504836',
+        category: 'Tractor & Machinery Parts',
+        variety: 'Part #RE504836',
+        supplier: 'Van Wall Equipment',
+        location: 'John Deere 8320',
+        quantity: 4,
+        unit: 'parts',
+        minStock: 2,
+        cost: 24.50,
+        expiry: 'N/A',
+        notes: 'Engine oil filter for 8320 R Tractor.'
+      },
+      {
+        id: '3',
+        name: '28-0-0 Liquid Nitrogen Fertilizer',
+        category: 'Chemicals & Fertilizer',
+        variety: '28% UAN Liquid',
+        supplier: 'Heartland Co-op (Ohio, IL)',
+        location: 'East Bulk Tank',
+        quantity: 850,
+        unit: 'gallons',
+        minStock: 300,
+        cost: 3.20,
+        expiry: 'Pre-plant 2027',
+        notes: 'Side-dress application planned for June.'
+      },
+      {
+        id: '4',
+        name: 'Bayer Asgrow AG24X9 Soybeans',
+        category: 'Seeds & Crops',
+        variety: 'AG24X9 XtendFlex',
+        supplier: 'Bayer Crop Science',
+        location: 'Seed Storage Shed',
+        quantity: 30,
+        unit: 'bags',
+        minStock: 10,
+        cost: 62.00,
+        expiry: 'Spring 2027',
+        notes: 'Treated with Acceleron.'
+      },
+      {
+        id: '5',
+        name: 'Hydraulic Hose Assembly 3/4"',
+        category: 'Tractor & Machinery Parts',
+        variety: '2-Wire 4000 PSI',
+        supplier: 'NAPA Auto Parts',
+        location: 'Case IH Combine',
+        quantity: 2,
+        unit: 'parts',
+        minStock: 1,
+        cost: 45.00,
+        expiry: 'N/A',
+        notes: 'Spare header hydraulic line.'
+      }
+    ];
+
+    // Default Starting Category Tabs
+    const DEFAULT_CATEGORIES = [
+      'All Items',
+      'Seeds & Crops',
+      'Tractor & Machinery Parts',
+      'Chemicals & Fertilizer',
+      'Livestock & Feed',
+      'Hardware & Tools'
+    ];
+
+    // Global State
+    let state = {
+      items: [],
+      categories: [],
+      activeCategory: 'All Items',
+      searchQuery: '',
+      lowStockOnly: false,
+      sortBy: 'name-asc',
+      deleteTargetId: null
+    };
+
+    // DOM Elements
+    const inventoryGrid = document.getElementById('inventoryGrid');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const lowStockToggle = document.getElementById('lowStockToggle');
+    const lowStockIndicator = document.getElementById('lowStockIndicator');
+    const dynamicTabList = document.getElementById('dynamicTabList');
+    
+    // Summary Stat Elements
+    const statTotalItems = document.getElementById('statTotalItems');
+    const statLowStock = document.getElementById('statLowStock');
+    const statTotalValue = document.getElementById('statTotalValue');
+    const statLocations = document.getElementById('statLocations');
+    const statLowStockCard = document.getElementById('statLowStockCard');
+
+    // Modals & Forms
+    const itemModal = document.getElementById('itemModal');
+    const customTabModal = document.getElementById('customTabModal');
+    const shareModal = document.getElementById('shareModal');
+    const learnModal = document.getElementById('learnModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const itemForm = document.getElementById('itemForm');
+    const newTabForm = document.getElementById('newTabForm');
+
+    // INITIALIZATION
+    function init() {
+      loadData();
+      renderTabs();
+      setupEventListeners();
+      render();
+    }
+
+    // Load from localStorage
+    function loadData() {
+      const storedItems = localStorage.getItem('aff_inventory_items');
+      const storedCategories = localStorage.getItem('aff_inventory_categories');
+
+      if (storedItems) {
+        try { state.items = JSON.parse(storedItems); } catch(e) { state.items = [...DEFAULT_FARM_DATA]; }
+      } else {
+        state.items = [...DEFAULT_FARM_DATA];
+        saveData();
+      }
+
+      if (storedCategories) {
+        try { state.categories = JSON.parse(storedCategories); } catch(e) { state.categories = [...DEFAULT_CATEGORIES]; }
+      } else {
+        state.categories = [...DEFAULT_CATEGORIES];
+        saveCategories();
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('aff_inventory_items', JSON.stringify(state.items));
+      render();
+    }
+
+    function saveCategories() {
+      localStorage.setItem('aff_inventory_categories', JSON.stringify(state.categories));
+      renderTabs();
+      populateCategoryDropdown();
+      renderTabManagementList();
+    }
+
+    // RENDER CATEGORY TABS
+    function renderTabs() {
+      dynamicTabList.innerHTML = state.categories.map(cat => {
+        const isActive = state.activeCategory === cat;
+        const activeStyles = isActive 
+          ? 'bg-clay-700 text-white shadow font-bold border-clay-700' 
+          : 'bg-cream-100 text-slate-700 hover:bg-cream-200 border-cream-300 font-semibold';
+
+        return `
+          <button onclick="setActiveTab('${escapeHtml(cat)}')" 
+            class="px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all border flex items-center gap-1.5 ${activeStyles}">
+            <span>${escapeHtml(cat)}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    window.setActiveTab = function(cat) {
+      state.activeCategory = cat;
+      renderTabs();
+      render();
+    };
+
+    // Populate Modal Category Select Box
+    function populateCategoryDropdown() {
+      const select = document.getElementById('itemCategory');
+      const validCategories = state.categories.filter(c => c !== 'All Items');
+      select.innerHTML = validCategories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    }
+
+    // Tab Management Modal Content
+    function renderTabManagementList() {
+      const container = document.getElementById('tabManagementList');
+      const customTabs = state.categories.filter(c => c !== 'All Items');
+
+      container.innerHTML = customTabs.map(cat => `
+        <div class="flex items-center justify-between p-2 bg-cream-100 rounded-lg border border-cream-300 text-xs">
+          <span class="font-semibold text-slate-800">${escapeHtml(cat)}</span>
+          <button onclick="deleteCustomTab('${escapeHtml(cat).replace(/'/g, "\\'")}')" 
+            class="text-red-600 hover:text-red-800 p-1 font-bold" title="Delete Tab">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    window.deleteCustomTab = function(catName) {
+      if (state.categories.length <= 2) {
+        showToast("Must keep at least one category tab");
+        return;
+      }
+      state.categories = state.categories.filter(c => c !== catName);
+      if (state.activeCategory === catName) state.activeCategory = 'All Items';
+      saveCategories();
+      showToast(`Deleted tab "${catName}"`);
+    };
+
+    // Quick Quantity Adjuster
+    window.adjustQuantity = function(id, delta) {
+      const item = state.items.find(i => i.id === id);
+      if (!item) return;
+
+      const newQty = Math.max(0, parseFloat((item.quantity + delta).toFixed(2)));
+      if (newQty !== item.quantity) {
+        item.quantity = newQty;
+        saveData();
+        showToast(`Updated ${item.name}: ${newQty} ${item.unit}`);
+      }
+    };
+
+    // Calculate Dashboard Stats
+    function updateMetrics() {
+      const totalItems = state.items.length;
+      const lowStockItems = state.items.filter(i => Number(i.quantity) <= Number(i.minStock)).length;
+      
+      const totalValuation = state.items.reduce((sum, item) => {
+        const itemCost = parseFloat(item.cost) || 0;
+        return sum + (item.quantity * itemCost);
+      }, 0);
+
+      const locations = new Set(state.items.map(i => i.location).filter(Boolean)).size;
+
+      statTotalItems.textContent = totalItems;
+      statLowStock.textContent = lowStockItems;
+      statTotalValue.textContent = `$${totalValuation.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      statLocations.textContent = locations;
+
+      if (lowStockItems > 0) {
+        statLowStockCard.classList.add('border-amber-300', 'bg-amber-50/60');
+      } else {
+        statLowStockCard.classList.remove('border-amber-300', 'bg-amber-50/60');
+      }
+    }
+
+    // Filter & Sort Logic
+    function getFilteredItems() {
+      return state.items.filter(item => {
+        const query = state.searchQuery.toLowerCase();
+        const matchesSearch = !query || 
+          item.name.toLowerCase().includes(query) ||
+          (item.variety && item.variety.toLowerCase().includes(query)) ||
+          (item.supplier && item.supplier.toLowerCase().includes(query)) ||
+          (item.location && item.location.toLowerCase().includes(query)) ||
+          item.category.toLowerCase().includes(query);
+
+        const matchesCategory = state.activeCategory === 'All Items' || item.category === state.activeCategory;
+        const matchesLowStock = !state.lowStockOnly || (Number(item.quantity) <= Number(item.minStock));
+
+        return matchesSearch && matchesCategory && matchesLowStock;
+      }).sort((a, b) => {
+        if (state.sortBy === 'name-asc') return a.name.localeCompare(b.name);
+        if (state.sortBy === 'name-desc') return b.name.localeCompare(a.name);
+        if (state.sortBy === 'qty-asc') return a.quantity - b.quantity;
+        if (state.sortBy === 'qty-desc') return b.quantity - a.quantity;
+        if (state.sortBy === 'val-desc') return ((b.quantity * (b.cost || 0)) - (a.quantity * (a.cost || 0)));
+        if (state.sortBy === 'location') return (a.location || '').localeCompare(b.location || '');
+        return 0;
+      });
+    }
+
+    // Render Cards
+    function render() {
+      updateMetrics();
+      const filtered = getFilteredItems();
+
+      if (filtered.length === 0) {
+        inventoryGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      inventoryGrid.innerHTML = filtered.map(item => {
+        const isLowStock = Number(item.quantity) <= Number(item.minStock);
+        const itemValuation = (item.quantity * (item.cost || 0));
+
+        const statusBadge = isLowStock
+          ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+               <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Low Stock
+             </span>`
+          : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+               <i class="fa-solid fa-check text-[10px]"></i> In Stock
+             </span>`;
+
+        return `
+          <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border ${isLowStock ? 'border-amber-300 ring-1 ring-amber-200' : 'border-cream-300'} hover:shadow-md transition-all flex flex-col justify-between">
+            
+            <div>
+              <!-- Category Tag & Badge -->
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-clay-700 bg-cream-200 px-2.5 py-0.5 rounded-md border border-cream-300">
+                  ${escapeHtml(item.category)}
+                </span>
+                ${statusBadge}
+              </div>
+
+              <!-- Item Name -->
+              <h3 class="font-serif font-bold text-slate-900 text-base sm:text-lg leading-snug mb-1">
+                ${escapeHtml(item.name)}
+              </h3>
+
+              <!-- Hybrid / Part # / Spec -->
+              ${item.variety ? `
+                <p class="text-xs font-medium text-clay-700 mb-2 flex items-center gap-1">
+                  <i class="fa-solid fa-microchip text-slate-400"></i> ${escapeHtml(item.variety)}
+                </p>
+              ` : ''}
+
+              <!-- Location & Supplier Badges -->
+              <div class="space-y-1 mb-3 text-xs text-slate-500">
+                ${item.location ? `
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-tractor text-slate-400 w-4"></i>
+                    <span class="font-medium text-slate-700">${escapeHtml(item.location)}</span>
+                  </div>
+                ` : ''}
+                ${item.supplier ? `
+                  <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-building-user text-slate-400 w-4"></i>
+                    <span>${escapeHtml(item.supplier)}</span>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Quantity Block -->
+              <div class="bg-cream-100/70 rounded-xl p-3 border border-cream-300 flex items-center justify-between mb-3">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Stock Level</span>
+                  <div class="flex items-baseline gap-1">
+                    <span class="text-2xl font-black ${isLowStock ? 'text-amber-700' : 'text-slate-800'}">
+                      ${item.quantity}
+                    </span>
+                    <span class="text-xs font-medium text-slate-600">${escapeHtml(item.unit)}</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400 block">Alert below: ${item.minStock} ${escapeHtml(item.unit)}</span>
+                </div>
+
+                <!-- Touch Buttons -->
+                <div class="flex items-center gap-1">
+                  <button onclick="adjustQuantity('${item.id}', -1)" 
+                    class="w-9 h-9 rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 active:scale-95 flex items-center justify-center font-bold text-lg shadow-sm">
+                    -
+                  </button>
+                  <button onclick="adjustQuantity('${item.id}', 1)" 
+                    class="w-9 h-9 rounded-lg bg-farmgreen-700 text-white hover:bg-farmgreen-600 active:scale-95 flex items-center justify-center font-bold text-lg shadow-sm">
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cost & Total Valuation -->
+              ${item.cost ? `
+                <div class="flex items-center justify-between text-xs py-1.5 px-2 bg-slate-50 rounded-lg border border-slate-100 mb-3">
+                  <span class="text-slate-500">Unit Cost: <b>$${Number(item.cost).toFixed(2)}</b></span>
+                  <span class="text-emerald-800 font-bold">Total: $${itemValuation.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
+                </div>
+              ` : ''}
+
+              <!-- Expiry / Notes -->
+              ${item.expiry || item.notes ? `
+                <div class="text-[11px] text-slate-500 bg-white p-2 rounded-lg border border-slate-100 space-y-1">
+                  ${item.expiry ? `<div><i class="fa-regular fa-calendar text-clay-600 mr-1"></i><b>Window:</b> ${escapeHtml(item.expiry)}</div>` : ''}
+                  ${item.notes ? `<div class="italic text-slate-600">"${escapeHtml(item.notes)}"</div>` : ''}
+                </div>
+              ` : ''}
+
+            </div>
+
+            <!-- Card Actions -->
+            <div class="pt-3 mt-2 border-t border-cream-300 flex items-center justify-end space-x-2">
+              <button onclick="openEditModal('${item.id}')" 
+                class="px-2.5 py-1 text-xs font-bold text-slate-600 hover:text-clay-700 hover:bg-clay-50 rounded-lg transition-colors flex items-center gap-1">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button onclick="promptDelete('${item.id}', '${escapeHtml(item.name).replace(/'/g, "\\'")}')" 
+                class="px-2.5 py-1 text-xs font-bold text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // MODAL HANDLERS
+    function openAddModal() {
+      document.getElementById('modalTitle').textContent = 'Add Inventory Item';
+      document.getElementById('itemId').value = '';
+      itemForm.reset();
+      populateCategoryDropdown();
+      itemModal.classList.remove('hidden');
+    }
+
+    window.openEditModal = function(id) {
+      const item = state.items.find(i => i.id === id);
+      if (!item) return;
+
+      populateCategoryDropdown();
+      document.getElementById('modalTitle').textContent = 'Edit Record';
+      document.getElementById('itemId').value = item.id;
+      document.getElementById('itemName').value = item.name;
+      document.getElementById('itemCategory').value = item.category;
+      document.getElementById('itemVariety').value = item.variety || '';
+      document.getElementById('itemSupplier').value = item.supplier || '';
+      document.getElementById('itemLocation').value = item.location || '';
+      document.getElementById('itemQuantity').value = item.quantity;
+      document.getElementById('itemUnit').value = item.unit;
+      document.getElementById('itemMinStock').value = item.minStock;
+      document.getElementById('itemCost').value = item.cost || '';
+      document.getElementById('itemExpiry').value = item.expiry || '';
+      document.getElementById('itemNotes').value = item.notes || '';
+
+      itemModal.classList.remove('hidden');
+    };
+
+    function closeModal() {
+      itemModal.classList.add('hidden');
+    }
+
+    // Save Item
+    itemForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById('itemId').value;
+      const name = document.getElementById('itemName').value.trim();
+      const category = document.getElementById('itemCategory').value;
+      const variety = document.getElementById('itemVariety').value.trim();
+      const supplier = document.getElementById('itemSupplier').value.trim();
+      const location = document.getElementById('itemLocation').value.trim();
+      const quantity = parseFloat(document.getElementById('itemQuantity').value);
+      const unit = document.getElementById('itemUnit').value.trim();
+      const minStock = parseFloat(document.getElementById('itemMinStock').value);
+      const cost = parseFloat(document.getElementById('itemCost').value) || 0;
+      const expiry = document.getElementById('itemExpiry').value.trim();
+      const notes = document.getElementById('itemNotes').value.trim();
+
+      const record = { id: id || Date.now().toString(), name, category, variety, supplier, location, quantity, unit, minStock, cost, expiry, notes };
+
+      if (id) {
+        const idx = state.items.findIndex(i => i.id === id);
+        if (idx !== -1) state.items[idx] = record;
+        showToast(`Updated "${name}"`);
+      } else {
+        state.items.unshift(record);
+        showToast(`Added "${name}"`);
+      }
+
+      saveData();
+      closeModal();
+    });
+
+    // Custom Tab Form Submission
+    newTabForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newName = document.getElementById('newTabNameInput').value.trim();
+      if (!newName) return;
+
+      if (state.categories.includes(newName)) {
+        showToast("Tab already exists!");
+        return;
+      }
+
+      state.categories.push(newName);
+      saveCategories();
+      document.getElementById('newTabNameInput').value = '';
+      showToast(`Added dynamic tab "${newName}"`);
+    });
+
+    // Delete item prompt
+    window.promptDelete = function(id, name) {
+      state.deleteTargetId = id;
+      document.getElementById('deleteItemName').textContent = `Are you sure you want to delete "${name}"?`;
+      deleteModal.classList.remove('hidden');
+    };
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+      if (state.deleteTargetId) {
+        state.items = state.items.filter(i => i.id !== state.deleteTargetId);
+        saveData();
+        showToast('Item deleted');
+      }
+      deleteModal.classList.add('hidden');
+      state.deleteTargetId = null;
+    });
+
+    document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+      deleteModal.classList.add('hidden');
+    });
+
+    // Export & Import
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ items: state.items, categories: state.categories }, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `anderson_farm_inventory_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('JSON Backup Exported!');
+    }
+
+    function exportCSV() {
+      if (state.items.length === 0) return showToast('No items to export');
+
+      const headers = ['Name', 'Category', 'Variety / Part#', 'Supplier', 'Location', 'Quantity', 'Unit', 'Min Alert', 'Unit Cost ($)', 'Total Value ($)', 'Window/Expiry', 'Notes'];
+      const rows = state.items.map(i => [
+        `"${i.name.replace(/"/g, '""')}"`,
+        `"${i.category.replace(/"/g, '""')}"`,
+        `"${(i.variety || '').replace(/"/g, '""')}"`,
+        `"${(i.supplier || '').replace(/"/g, '""')}"`,
+        `"${(i.location || '').replace(/"/g, '""')}"`,
+        i.quantity,
+        `"${i.unit.replace(/"/g, '""')}"`,
+        i.minStock,
+        (i.cost || 0),
+        ((i.quantity * (i.cost || 0)).toFixed(2)),
+        `"${(i.expiry || '').replace(/"/g, '""')}"`,
+        `"${(i.notes || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", encodeURI(csvContent));
+      downloadAnchor.setAttribute("download", `anderson_farm_inventory_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('CSV File Exported!');
+    }
+
+    document.getElementById('triggerImportBtn').addEventListener('click', () => {
+      document.getElementById('importFileInput').click();
+    });
+
+    document.getElementById('importFileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (imported.items && Array.isArray(imported.items)) {
+            state.items = imported.items;
+            if (imported.categories) state.categories = imported.categories;
+            saveData();
+            saveCategories();
+            shareModal.classList.add('hidden');
+            showToast('Backup file loaded successfully!');
+          } else if (Array.isArray(imported)) {
+            state.items = imported;
+            saveData();
+            shareModal.classList.add('hidden');
+            showToast('Items imported successfully!');
+          }
+        } catch (err) {
+          showToast('Invalid JSON file format');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // EVENT LISTENERS
+    function setupEventListeners() {
+      searchInput.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        render();
+      });
+
+      sortSelect.addEventListener('change', (e) => {
+        state.sortBy = e.target.value;
+        render();
+      });
+
+      lowStockToggle.addEventListener('click', () => {
+        state.lowStockOnly = !state.lowStockOnly;
+        if (state.lowStockOnly) {
+          lowStockToggle.classList.add('bg-amber-100', 'border-amber-300', 'text-amber-900');
+          lowStockIndicator.classList.remove('bg-slate-300');
+          lowStockIndicator.classList.add('bg-amber-600');
+        } else {
+          lowStockToggle.classList.remove('bg-amber-100', 'border-amber-300', 'text-amber-900');
+          lowStockIndicator.classList.remove('bg-amber-600');
+          lowStockIndicator.classList.add('bg-slate-300');
+        }
+        render();
+      });
+
+      document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+        state.searchQuery = '';
+        state.activeCategory = 'All Items';
+        state.lowStockOnly = false;
+        searchInput.value = '';
+        renderTabs();
+        render();
+      });
+
+      // Modals triggers
+      document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('cancelFormBtn').addEventListener('click', closeModal);
+
+      document.getElementById('openAddTabBtn').addEventListener('click', () => {
+        renderTabManagementList();
+        customTabModal.classList.remove('hidden');
+      });
+      document.getElementById('closeTabModalBtn').addEventListener('click', () => customTabModal.classList.add('hidden'));
+
+      document.getElementById('shareBtn').addEventListener('click', () => shareModal.classList.remove('hidden'));
+      document.getElementById('closeShareModalBtn').addEventListener('click', () => shareModal.classList.add('hidden'));
+      document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
+
+      document.getElementById('resetDemoBtn').addEventListener('click', () => {
+        state.items = [...DEFAULT_FARM_DATA];
+        state.categories = [...DEFAULT_CATEGORIES];
+        saveData();
+        saveCategories();
+        shareModal.classList.add('hidden');
+        showToast('Reset to demo farm data');
+      });
+
+      document.getElementById('learnBtn').addEventListener('click', () => learnModal.classList.remove('hidden'));
+      document.getElementById('closeLearnModalBtn').addEventListener('click', () => learnModal.classList.add('hidden'));
+
+      // Tab Swapper in Learn Modal
+      document.querySelectorAll('.learn-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          document.querySelectorAll('.learn-tab').forEach(t => {
+            t.classList.remove('active-tab', 'border-clay-700', 'text-clay-800', 'font-bold');
+            t.classList.add('border-transparent', 'text-slate-500');
+          });
+          e.target.classList.add('active-tab', 'border-clay-700', 'text-clay-800', 'font-bold');
+          e.target.classList.remove('border-transparent', 'text-slate-500');
+
+          const targetTab = e.target.getAttribute('data-tab');
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          document.getElementById(targetTab).classList.remove('hidden');
+        });
+      });
+    }
+
+    // TOAST FEEDBACK
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'bg-clay-900 text-cream-100 text-xs font-bold px-4 py-3 rounded-xl shadow-xl border border-harvestgold-500 flex items-center gap-2 animate-fade-in pointer-events-auto';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-harvestgold-500"></i> ${escapeHtml(message)}`;
+      
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    // HTML Sanitization
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
